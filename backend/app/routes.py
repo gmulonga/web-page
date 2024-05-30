@@ -32,13 +32,12 @@ def login():
                 access_token = create_access_token(identity=username)
                 return jsonify({"status": "success", "access_token": access_token})
             return jsonify({"status": "error", "message": "Invalid credentials"}), 401
-        else:
-            # Look up the username in the LoginCredentials table
-            user = LoginCredentials.query.filter_by(username=username).first()
-            if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-                access_token = create_access_token(identity=username)
-                return jsonify({"status": "success", "access_token": access_token})
-            return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+        # Look up the username in the LoginCredentials table
+        user = LoginCredentials.query.filter_by(username=username).first()
+        if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            access_token = create_access_token(identity=username)
+            return jsonify({"status": "success", "access_token": access_token})
+        return jsonify({"status": "error", "message": "Invalid credentials"}), 401
 
 @main.route('/logout')
 def logout():
@@ -473,8 +472,7 @@ def subscribe():
 
             return 'You have been successfully subscribed.', 201
         return 'You are already subscribed.', 200
-    else:
-        return 'Invalid email address.', 400
+    return 'Invalid email address.', 400
 
 
 # -------------- ABOUT US -------------------
