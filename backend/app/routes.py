@@ -4,6 +4,10 @@ import bcrypt
 from .models import Cars, Testimonies, LoginCredentials, CustomerRequests, SubscribedEmails, AboutUs, EmailConfgurations, Patners, SpareParts, Social, SpareRequests, CarImages, db
 import json
 from werkzeug.security import generate_password_hash
+import smtplib
+import ssl
+from email.message import EmailMessage
+from flask_sqlalchaemy import SQLAlchemyError
 
 main = Blueprint('main', __name__)
 
