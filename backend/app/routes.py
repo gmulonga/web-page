@@ -1,10 +1,13 @@
-from flask import jsonify, Blueprint, request, session
+from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required, create_access_token
 import bcrypt
-from .models import Cars, Testimonies, LoginCredentials, CustomerRequests, SubscribedEmails, AboutUs, EmailConfgurations, Patners, SpareParts, Social, SpareRequests, db
+from .models import Cars, Testimonies, LoginCredentials, CustomerRequests, SubscribedEmails, AboutUs, EmailConfgurations, Patners, SpareParts, Social, SpareRequests, CarImages, db
 import json
+from werkzeug.security import generate_password_hash
 
 main = Blueprint('main', __name__)
+
+errorMessage = "An error occurred"
 
 USERS = {'carconnect': '1234'}
 
@@ -124,7 +127,6 @@ def add_car():
                 'year': data.get('year'),
                 'type': data.get('type'),
                 'description': data.get('description'),
-                # Serialize dimensions to a string (for example, JSON)
                 'dimensions': json.dumps(data.get('dimensions')),
                 'technology': json.dumps(data.get('technology')),
                 'engine': json.dumps(data.get('engine')),
@@ -139,10 +141,8 @@ def add_car():
             return jsonify({"status": "success", "message": "Car added successfully"})
 
         except Exception as e:
-            print('An error occurred:', str(e))
             db.session.rollback()
-            return jsonify({"status": "error", "message": "An error occurred"}), 500
-
+            return jsonify({"status": "error", "message": errorMessage}), 500
 
 
 # getting a car with a specific ID
