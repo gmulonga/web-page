@@ -123,12 +123,10 @@ def home():
 
 @main.route('/cars', methods=['GET'])
 def get_cars():
-    """
-    Retrieve a list of all cars.
+    """Retrieve a list of all cars.
 
     Returns:
-        jsonify: A JSON response containing information about all cars including their id, name, price, year,
-        type, description, dimensions, technology, engine, whether they are exclusive, and their images.
+        jsonify: A JSON response containing information about all cars
     """
     cars = Cars.query.all()
     cars_list = []
@@ -228,7 +226,7 @@ def get_car(id):
 
 @main.route('/get-cars/<string:name>', methods=['GET'])
 def get_cars_by_name(name):
-    """ Returns a ca r by name
+    """Returns a car by name
 
     Args:
         name (str): the name of the car
@@ -236,6 +234,7 @@ def get_cars_by_name(name):
     Returns:
         jsonify: returns a JSON of the response of a specific car by name
     """
+
     cars = Cars.query.filter_by(name=name).all()
     cars_list = []
     for car in cars:
@@ -263,14 +262,15 @@ def get_cars_by_name(name):
 
 @main.route('/car/<int:car_id>/images', methods=['GET'])
 def get_car_images(car_id):
-    """ Returns all the images of a specific car
+    """Returns all the images of a specific car
 
     Args:
         car_id (int): the ID of the car
 
     Returns:
-        jsonify: returns a JSON response of a collection of images belonging to a specific car
+        jsonify: returns a JSON response for images belonging to a specific car
     """
+
     car_images = CarImages.query.filter_by(car_id=car_id).all()
 
     image_data = [{'image_base64': image.image_base64} for image in car_images]
@@ -280,7 +280,7 @@ def get_car_images(car_id):
 
 @main.route('/evs/<string:name>', methods=['GET'])
 def get_evs_by_name(name):
-    """ Returns all the evs by name
+    """Returns all the evs by name
 
     Args:
         name (str): name of the car
@@ -288,6 +288,7 @@ def get_evs_by_name(name):
     Returns:
         jsonify: returns all the evs of a specific name
     """
+
     evs_cars = Cars.query.filter_by(type='EVs', name=name).all()
 
     if not evs_cars:
@@ -320,11 +321,12 @@ def get_evs_by_name(name):
 
 @main.route('/evs', methods=['GET'])
 def get_evs():
-    """ returns all the evs
+    """returns all the evs
 
     Returns:
         jsonify: returns a JSON response to all the evs
     """
+
     evs_cars = Cars.query.filter_by(type='EVs').all()
     evs_list = []
     for car in evs_cars:
@@ -348,11 +350,12 @@ def get_evs():
 
 @main.route('/exclusive-cars', methods=['GET'])
 def get_exclusive_cars():
-    """ Returns all the exclusive cars
+    """Returns all the exclusive cars
 
     Returns:
         jsonify: returns all the exclusive cars
     """
+
     exclusive_cars = Cars.query.filter_by(is_exclusive='True').all()
     exclusive_list = []
     for car in exclusive_cars:
@@ -377,7 +380,7 @@ def get_exclusive_cars():
 @main.route('/delete-car/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_car(id):
-    """ Deletes a car
+    """Deletes a car
 
     Args:
         id (int): this is the car ID
@@ -385,6 +388,7 @@ def delete_car(id):
     Returns:
         jsonify: Returns a json reponse 204 or 404
     """
+
     try:
         car = Cars.query.get(id)
         if car:
@@ -411,11 +415,12 @@ def delete_car(id):
 
 @main.route('/customer-requests', methods=['GET'])
 def get_customer_requests():
-    """ gets all the customer requests
+    """gets all the customer requests
 
     Returns:
         jsonify: returns all the requests of customers
     """
+
     try:
         customer_requests = CustomerRequests.query.all()
         requests_data = [
@@ -436,7 +441,7 @@ def get_customer_requests():
 @main.route('/customer-requests/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_customer_request(id):
-    """ deletes customer request
+    """deletes customer request
 
     Args:
         id (int): ID for the customer request
@@ -444,6 +449,7 @@ def delete_customer_request(id):
     Returns:
         jsonify: returns a response 204 or 404
     """
+
     try:
         customer_request = CustomerRequests.query.get(id)
         if customer_request:
@@ -469,11 +475,12 @@ def delete_customer_request(id):
 @main.route('/add-testimony', methods=['POST'])
 @jwt_required()
 def add_testimonial():
-    """ add a new testimony
+    """add a new testimony
 
     Returns:
         jsonify: returns a response 201
     """
+
     data = request.json
     testimonial = Testimonies(
         name=data['name'],
@@ -486,11 +493,12 @@ def add_testimonial():
 
 @main.route('/testimonies', methods=['GET'])
 def get_testimonials():
-    """ fetches all testimonies
+    """fetches all testimonies
 
     Returns:
         jsonofy: JSON reponse to all testimonies
     """
+
     testimonials = Testimonies.query.all()
     testimonials_data = [
         {
@@ -506,14 +514,15 @@ def get_testimonials():
 @main.route('/testimonies/<int:id>', methods=['PUT'])
 @jwt_required()
 def edit_testimony(id):
-    """ edits a testimony
+    """edits a testimony
 
     Args:
         id (int): testimony ID
 
     Returns:
-        jsonify: returns a JSON response 
+        jsonify: returns a JSON response
     """
+
     try:
         testimony = Testimonies.query.get_or_404(id)
 
@@ -536,7 +545,7 @@ def edit_testimony(id):
 @main.route('/testimonies/<int:testimony_id>', methods=['DELETE'])
 @jwt_required()
 def delete_testimony(testimony_id):
-    """ deletes a testimony
+    """deletes a testimony
 
     Args:
         testimony_id (int): testimony ID
@@ -557,7 +566,7 @@ def delete_testimony(testimony_id):
 @main.route('/add_request', methods=['POST'])
 @jwt_required()
 def add_request():
-    """ adds a new request for a car
+    """adds a new request for a car
 
     Returns:
         jsonify: response 201
@@ -586,7 +595,7 @@ def add_request():
 
 @main.route('/get_requests', methods=['GET'])
 def get_requests():
-    """ returns all the requests by a customer
+    """returns all the requests by a customer
 
     Returns:
         jsonify: returns a json response for all the requests
@@ -675,7 +684,7 @@ def get_about_us():
 @main.route('/edit_about_us/<int:id>', methods=['PUT'])
 @jwt_required()
 def edit_about_us(id):
-    """ edits the about us
+    """edits the about us
 
     Args:
         id (int): the id of the about us
@@ -708,7 +717,7 @@ def edit_about_us(id):
 @main.route('/delete_about_us/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_about_us(id):
-    """ deletes the about us 
+    """deletes the about us
 
     Args:
         id (int): the ID of the about us
@@ -730,7 +739,7 @@ def delete_about_us(id):
 
 
 def send_email(email_receiver, email_subject, email_body):
-    """ sending email functionality
+    """sending email functionality
 
     Args:
         email_receiver (str): the email recepient
@@ -836,7 +845,7 @@ def get_partners():
 @main.route('/delete_partner/<int:partner_id>', methods=['DELETE'])
 @jwt_required()
 def delete_partner(partner_id):
-    """ deletes a partner from the DB
+    """deletes a partner from the DB
 
     Args:
         partner_id (int): the ID of the partner
@@ -887,7 +896,7 @@ def add_spare_part():
 
 @main.route('/get_spare_parts', methods=['GET'])
 def get_spare_parts():
-    """ fetches all the spare parts from the DB
+    """fetches all the spare parts from the DB
 
     Returns:
         jsonify: returns a json response to all the spare parts
@@ -911,7 +920,7 @@ def get_spare_parts():
 
 @main.route('/get_spare_part/<int:spare_id>', methods=['GET'])
 def get_spare_part(spare_id):
-    """ fetches a spare part by ID
+    """fetches a spare part by ID
 
     Args:
         spare_id (int): the ID of the spare part
@@ -942,7 +951,7 @@ def get_spare_part(spare_id):
 
 @main.route('/get_spare_parts/<string:make>/<string:year>', methods=['GET'])
 def get_spare_parts_by_make_and_year(make, year):
-    """ returns a spare part for a particular year and make
+    """returns a spare part for a particular year and make
 
     Args:
         make (str): make id the spare part
@@ -975,7 +984,7 @@ def get_spare_parts_by_make_and_year(make, year):
 @main.route('/delete_spare_part/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_spare_part(id):
-    """ deletes a spare part
+    """deletes a spare part
 
     Args:
         id (int): the id of the spare part
@@ -1095,7 +1104,7 @@ def get_all_requests():
 @main.route('/delete_spare_request/<int:request_id>', methods=['DELETE'])
 @jwt_required()
 def delete_spare_request(request_id):
-    """ deletes a spare part request
+    """deletes a spare part request
 
     Args:
         request_id (int): the ID of the spare part
