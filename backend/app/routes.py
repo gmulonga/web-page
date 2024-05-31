@@ -146,7 +146,7 @@ def add_car():
 
         except Exception as e:
             db.session.rollback()
-            return jsonify({"status": "error", "message": errorMessage}), 500
+            return jsonify({'error': str(e)}), 500
 
 
 # getting a car with a specific ID
@@ -307,7 +307,7 @@ def delete_car(id):
     except Exception as e:
         print('An error occurred:', str(e))
         db.session.rollback()
-        return jsonify({"status": "error", "message": "An error occurred"}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 # ---------- GETTING CUSTOMER REQUEST -----------
@@ -343,7 +343,7 @@ def delete_customer_request(id):
         return jsonify({"status": "error", "message": "Customer request not found"}), 404
     except Exception as e:
         db.session.rollback()
-        return jsonify({"status": "error", "message": "An error occurred"}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 #  ------------ TESTIMONIES ROUTES -----------
@@ -444,13 +444,13 @@ def get_requests():
         requests = CustomerRequests.query.all()
 
         requests_list = []
-        for request in requests:
+        for req in requests:
             request_data = {
-                'id': request.id,
-                'name': request.name,
-                'email': request.email,
-                'phone': request.phone,
-                'car_id': request.car_id
+                'id': req.id,
+                'name': req.name,
+                'email': req.email,
+                'phone': req.phone,
+                'car_id': req.car_id
             }
             requests_list.append(request_data)
 
@@ -499,7 +499,7 @@ def add_about_us():
             return jsonify({'message': 'About Us added successfully'}), 201
         except Exception as e:
             db.session.rollback()
-            return jsonify({'message': 'Error adding About Us', 'error': str(e)}), 500
+            return jsonify({'error': str(e)}), 500
 
 
 # get all about us
@@ -603,9 +603,8 @@ def send_emails():  # Rename the function for clarity
         for email_receiver in emails:
             try:
                 send_email(email_receiver, email_subject, email_body)
-                print(f"Email sent to: {email_receiver}")
             except Exception as e:
-                print(f"Failed to send email to: {email_receiver}. Error: {e}")
+                return jsonify({'error': str(e)}), 500
 
         # Return a success response
         return jsonify({"message": "Emails sent successfully."}), 200
@@ -637,9 +636,8 @@ def add_partner():
             return jsonify({"status": "success", "message": "Partner added successfully"})
 
         except Exception as e:
-            print('An error occurred:', str(e))
             db.session.rollback()
-            return jsonify({"status": "error", "message": "An error occurred"}), 500
+            return jsonify({'error': str(e)}), 500
 
 
 @main.route('/get_partners', methods=['GET'])
@@ -829,13 +827,13 @@ def get_all_requests():
         all_requests = SpareRequests.query.all()
 
         requests_list = []
-        for request in all_requests:
+        for req in all_requests:
             request_data = {
-                'id': request.id,
-                'name': request.name,
-                'email': request.email,
-                'phone': request.phone,
-                'spare_id': request.spare_id
+                'id': req.id,
+                'name': req.name,
+                'email': req.email,
+                'phone': req.phone,
+                'spare_id': req.spare_id
             }
             requests_list.append(request_data)
 
@@ -878,7 +876,7 @@ def add_email():
         return jsonify({"message": "Email configuration added successfully"})
     except Exception as e:
         db.session.rollback()
-        return jsonify({"message": "Failed to add email configuration"}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 # Update route
@@ -897,7 +895,7 @@ def update_email(id):
             return jsonify({"message": "Email configuration updated successfully"})
         except Exception as e:
             db.session.rollback()
-            return jsonify({"message": "Failed to update email configuration"}), 500
+            return jsonify({'error': str(e)}), 500
     else:
         return jsonify({"message": "Email configuration not found"}), 404
 
@@ -927,7 +925,7 @@ def add_credentials():
         return jsonify({"message": "Login credentials added successfully"})
     except Exception as e:
         db.session.rollback()
-        return jsonify({"message": "Failed to add login credentials"}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 # Update route
@@ -950,7 +948,7 @@ def update_credentials(id):
             return jsonify({"message": "Login credentials updated successfully"})
         except Exception as e:
             db.session.rollback()
-            return jsonify({"message": "Failed to update login credentials"}), 500
+            return jsonify({'error': str(e)}), 500
     else:
         return jsonify({"message": "Login credentials not found"}), 404
 
