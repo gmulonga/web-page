@@ -234,7 +234,6 @@ def get_cars_by_name(name):
     Returns:
         jsonify: returns a JSON of the response of a specific car by name
     """
-
     cars = Cars.query.filter_by(name=name).all()
     cars_list = []
     for car in cars:
@@ -270,7 +269,6 @@ def get_car_images(car_id):
     Returns:
         jsonify: returns a JSON response for images belonging to a specific car
     """
-
     car_images = CarImages.query.filter_by(car_id=car_id).all()
 
     image_data = [{'image_base64': image.image_base64} for image in car_images]
@@ -288,7 +286,6 @@ def get_evs_by_name(name):
     Returns:
         jsonify: returns all the evs of a specific name
     """
-
     evs_cars = Cars.query.filter_by(type='EVs', name=name).all()
 
     if not evs_cars:
@@ -326,7 +323,6 @@ def get_evs():
     Returns:
         jsonify: returns a JSON response to all the evs
     """
-
     evs_cars = Cars.query.filter_by(type='EVs').all()
     evs_list = []
     for car in evs_cars:
@@ -355,7 +351,6 @@ def get_exclusive_cars():
     Returns:
         jsonify: returns all the exclusive cars
     """
-
     exclusive_cars = Cars.query.filter_by(is_exclusive='True').all()
     exclusive_list = []
     for car in exclusive_cars:
@@ -388,7 +383,6 @@ def delete_car(id):
     Returns:
         jsonify: Returns a json reponse 204 or 404
     """
-
     try:
         car = Cars.query.get(id)
         if car:
@@ -420,7 +414,6 @@ def get_customer_requests():
     Returns:
         jsonify: returns all the requests of customers
     """
-
     try:
         customer_requests = CustomerRequests.query.all()
         requests_data = [
@@ -449,7 +442,6 @@ def delete_customer_request(id):
     Returns:
         jsonify: returns a response 204 or 404
     """
-
     try:
         customer_request = CustomerRequests.query.get(id)
         if customer_request:
@@ -480,7 +472,6 @@ def add_testimonial():
     Returns:
         jsonify: returns a response 201
     """
-
     data = request.json
     testimonial = Testimonies(
         name=data['name'],
@@ -498,7 +489,6 @@ def get_testimonials():
     Returns:
         jsonofy: JSON reponse to all testimonies
     """
-
     testimonials = Testimonies.query.all()
     testimonials_data = [
         {
@@ -522,7 +512,6 @@ def edit_testimony(id):
     Returns:
         jsonify: returns a JSON response
     """
-
     try:
         testimony = Testimonies.query.get_or_404(id)
 
