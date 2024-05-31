@@ -4,12 +4,14 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
+
 db = SQLAlchemy()
 ma = Marshmallow()
 jwt = JWTManager()
 
+
 def create_app():
-    """creates a flask app """
+    """creates a flask app"""
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('app.config')
     app.config.from_pyfile('config.py')

@@ -2,8 +2,7 @@ from . import db
 
 
 class Cars(db.Model):
-    """
-    Cars class representing the cars table in the database.
+    """Cars class representing the cars table in the database.
 
     Attributes:
         id (int): The unique identifier of the car.
@@ -32,8 +31,7 @@ class Cars(db.Model):
 
 
 class CarImages(db.Model):
-    """
-    CarImages class representing the car_images table in the database.
+    """CarImages class representing the car_images table in the database.
 
     Attributes:
         id (int): The unique identifier of the car image.
@@ -46,8 +44,7 @@ class CarImages(db.Model):
 
 
 class Testimonies(db.Model):
-    """
-    Testimonies class representing the testimonies table in the database.
+    """Testimonies class representing the testimonies table in the database.
 
     Attributes:
         id (int): The unique identifier of the testimony.
@@ -60,8 +57,7 @@ class Testimonies(db.Model):
 
 
 class Patners(db.Model):
-    """
-    Patners class representing the patners table in the database.
+    """Patners class representing the patners table in the database.
 
     Attributes:
         id (int): The unique identifier of the partner.
@@ -74,8 +70,7 @@ class Patners(db.Model):
 
 
 class CustomerRequests(db.Model):
-    """
-    CustomerRequests class representing the customer_requests table in the database.
+    """CustomerRequests class representing the customer_requests table in the database.
 
     Attributes:
         id (int): The unique identifier of the customer request.
@@ -92,15 +87,14 @@ class CustomerRequests(db.Model):
 
 
 class SpareRequests(db.Model):
-    """
-    SpareRequests class representing the spare_requests table in the database.
+    """SpareRequests class representing the spare_requests table in the database.
 
     Attributes:
         id (int): The unique identifier of the spare request.
         name (str): The name of the customer.
         email (str): The email of the customer.
         phone (str): The phone number of the customer.
-        spare_id (str): The unique identifier of the spare part requested by the customer.
+        spare_id (str): The unique identifier of the spare part.
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -110,8 +104,7 @@ class SpareRequests(db.Model):
 
 
 class Social(db.Model):
-    """
-    Social class representing the social table in the database.
+    """Social class representing the social table in the database.
 
     Attributes:
         id (int): The unique identifier of the social media account.
@@ -128,8 +121,7 @@ class Social(db.Model):
 
 
 class SpareParts(db.Model):
-    """
-    SpareParts class representing the spare_parts table in the database.
+    """SpareParts class representing the spare_parts table in the database.
 
     Attributes:
         id (int): The unique identifier of the spare part.
@@ -146,8 +138,7 @@ class SpareParts(db.Model):
 
 
 class SubscribedEmails(db.Model):
-    """
-    SubscribedEmails class representing the subscribed_emails table in the database.
+    """SubscribedEmails class representing the subscribed_emails table in the database.
 
     Attributes:
         id (int): The unique identifier of the subscribed email.
@@ -158,8 +149,7 @@ class SubscribedEmails(db.Model):
 
 
 class AboutUs(db.Model):
-    """
-    AboutUs class representing the about_us table in the database.
+    """AboutUs class representing the about_us table in the database.
 
     Attributes:
         id (int): The unique identifier of the about us content.
@@ -183,8 +173,7 @@ class EmailConfgurations(db.Model):
 
 
 class LoginCredentials(db.Model):
-    """
-    LoginCredentials class representing the login_credentials table in the database.
+    """LoginCredentials class representing the login_credentials table in the database.
 
     Attributes:
         id (int): The unique identifier of the login credentials.
