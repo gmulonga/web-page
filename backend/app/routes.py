@@ -130,7 +130,6 @@ def get_cars():
         jsonify: A JSON response containing information about all cars including their id, name, price, year,
         type, description, dimensions, technology, engine, whether they are exclusive, and their images.
     """
-
     cars = Cars.query.all()
     cars_list = []
     for car in cars:
@@ -159,10 +158,7 @@ def get_cars():
 @main.route('/add-car', methods=['POST'])
 @jwt_required()
 def add_car():
-    """Adds a new car to the DB
-
-    """
-
+    """Adds a new car to the DB"""
     if request.method == 'POST':
         try:
             data = request.json
@@ -207,7 +203,6 @@ def get_car(id):
     Returns:
         jsonify: JSON response containing a car of a specific ID
     """
-
     car = Cars.query.get(id)
     if car:
         car_data = {
@@ -241,7 +236,6 @@ def get_cars_by_name(name):
     Returns:
         jsonify: returns a JSON of the response of a specific car by name
     """
-
     cars = Cars.query.filter_by(name=name).all()
     cars_list = []
     for car in cars:
@@ -277,7 +271,6 @@ def get_car_images(car_id):
     Returns:
         jsonify: returns a JSON response of a collection of images belonging to a specific car
     """
-
     car_images = CarImages.query.filter_by(car_id=car_id).all()
 
     image_data = [{'image_base64': image.image_base64} for image in car_images]
@@ -295,7 +288,6 @@ def get_evs_by_name(name):
     Returns:
         jsonify: returns all the evs of a specific name
     """
-
     evs_cars = Cars.query.filter_by(type='EVs', name=name).all()
 
     if not evs_cars:
@@ -333,7 +325,6 @@ def get_evs():
     Returns:
         jsonify: returns a JSON response to all the evs
     """
-
     evs_cars = Cars.query.filter_by(type='EVs').all()
     evs_list = []
     for car in evs_cars:
@@ -362,7 +353,6 @@ def get_exclusive_cars():
     Returns:
         jsonify: returns all the exclusive cars
     """
-
     exclusive_cars = Cars.query.filter_by(is_exclusive='True').all()
     exclusive_list = []
     for car in exclusive_cars:
@@ -395,7 +385,6 @@ def delete_car(id):
     Returns:
         jsonify: Returns a json reponse 204 or 404
     """
-
     try:
         car = Cars.query.get(id)
         if car:
@@ -427,7 +416,6 @@ def get_customer_requests():
     Returns:
         jsonify: returns all the requests of customers
     """
-
     try:
         customer_requests = CustomerRequests.query.all()
         requests_data = [
@@ -456,7 +444,6 @@ def delete_customer_request(id):
     Returns:
         jsonify: returns a response 204 or 404
     """
-
     try:
         customer_request = CustomerRequests.query.get(id)
         if customer_request:
@@ -487,7 +474,6 @@ def add_testimonial():
     Returns:
         jsonify: returns a response 201
     """
-
     data = request.json
     testimonial = Testimonies(
         name=data['name'],
@@ -505,7 +491,6 @@ def get_testimonials():
     Returns:
         jsonofy: JSON reponse to all testimonies
     """
-
     testimonials = Testimonies.query.all()
     testimonials_data = [
         {
@@ -559,7 +544,6 @@ def delete_testimony(testimony_id):
     Returns:
         jsonify: response 204
     """
-
     try:
         testimony = Testimonies.query.get_or_404(testimony_id)
         db.session.delete(testimony)
@@ -607,7 +591,6 @@ def get_requests():
     Returns:
         jsonify: returns a json response for all the requests
     """
-
     try:
         requests = CustomerRequests.query.all()
 
@@ -630,10 +613,7 @@ def get_requests():
 @main.route('/subscribe', methods=['POST'])
 @jwt_required()
 def subscribe():
-    """ allows a user to subscribe to emails
-
-    """
-
+    """allows a user to subscribe to emails"""
     data = request.json
     email = data['email']
 
@@ -651,10 +631,7 @@ def subscribe():
 @main.route('/add_about_us', methods=['POST'])
 @jwt_required()
 def add_about_us():
-    """ adds the about us
-
-    """
-
+    """adds the about us"""
     if request.method == 'POST':
         about_data = request.get_json()
 
@@ -684,10 +661,7 @@ def add_about_us():
 
 @main.route('/get_about_us', methods=['GET'])
 def get_about_us():
-    """ fetches the about us from the DB
-
-    """
-
+    """fetches the about us from the DB"""
     try:
         about_us_data = AboutUs.query.all()
         about_us_list = [{'id': item.id, 'about': item.about}
@@ -707,7 +681,6 @@ def edit_about_us(id):
         id (int): the id of the about us
 
     """
-
     try:
         about_us = AboutUs.query.get(id)
         if not about_us:
@@ -741,7 +714,6 @@ def delete_about_us(id):
         id (int): the ID of the about us
 
     """
-
     try:
         about_us = AboutUs.query.get(id)
         if not about_us:
@@ -765,7 +737,6 @@ def send_email(email_receiver, email_subject, email_body):
         email_subject (str): the email sender
         email_body (str): message of the email
     """
-
     email_configuration = EmailConfgurations.query.first()
     if email_configuration:
         email_sender = email_configuration.email
@@ -788,10 +759,7 @@ def send_email(email_receiver, email_subject, email_body):
 
 @main.route('/send-emails', methods=['POST'])
 def send_emails():
-    """ sends email to the subscribed customers
-
-    """
-
+    """sends email to the subscribed customers"""
     try:
         subscribed_emails = SubscribedEmails.query.all()
 
@@ -825,10 +793,7 @@ def send_emails():
 @main.route('/add_partner', methods=['POST'])
 @jwt_required()
 def add_partner():
-    """ adding partners in the footer secion
-
-    """
-
+    """adding partners in the footer secion"""
     if request.method == 'POST':
         try:
             data = request.json
@@ -858,10 +823,7 @@ def add_partner():
 
 @main.route('/get_partners', methods=['GET'])
 def get_partners():
-    """ fetches all the parteners in the DB
-
-    """
-
+    """fetches all the parteners in the DB"""
     try:
         partners = Patners.query.all()
         partners_data = [{"id": partner.id, "name": partner.name,
@@ -880,7 +842,6 @@ def delete_partner(partner_id):
         partner_id (int): the ID of the partner
 
     """
-
     if request.method == 'DELETE':
         try:
             partner = Patners.query.get(partner_id)
@@ -907,10 +868,7 @@ def delete_partner(partner_id):
 @main.route('/add_spare_part', methods=['POST'])
 @jwt_required()
 def add_spare_part():
-    """ adding a spare part
-
-    """
-
+    """adding a spare part"""
     data = request.get_json()
     new_spare_part = SpareParts(
         make=data['make'],
@@ -934,7 +892,6 @@ def get_spare_parts():
     Returns:
         jsonify: returns a json response to all the spare parts
     """
-
     spare_parts = SpareParts.query.all()
     spare_parts_list = []
     for part in spare_parts:
@@ -962,7 +919,6 @@ def get_spare_part(spare_id):
     Returns:
         jsonify: a json response to a particular spare part
     """
-
     try:
         spare_part = SpareParts.query.get(spare_id)
 
@@ -995,7 +951,6 @@ def get_spare_parts_by_make_and_year(make, year):
     Returns:
         jsonify: returns a json response for spare parts of a particular year and make
     """
-
     spare_parts = SpareParts.query.filter_by(make=make, year=year).all()
     if not spare_parts:
         return jsonify(
@@ -1026,7 +981,6 @@ def delete_spare_part(id):
         id (int): the id of the spare part
 
     """
-
     spare_part = SpareParts.query.get(id)
     if spare_part:
         db.session.delete(spare_part)
@@ -1042,10 +996,7 @@ def delete_spare_part(id):
 @main.route('/add_social', methods=['POST'])
 @jwt_required()
 def add_social():
-    """ adding social media account
-
-    """
-
+    """adding social media account"""
     data = request.get_json()
     new_social = Social(
         phone=data['phone'],
@@ -1061,10 +1012,7 @@ def add_social():
 @main.route('/delete_social', methods=['DELETE'])
 @jwt_required()
 def delete_social():
-    """ deletes social media account
-
-    """
-
+    """deletes social media account"""
     social_records = Social.query.all()
 
     if social_records:
@@ -1081,10 +1029,7 @@ def delete_social():
 
 @main.route('/get_social', methods=['GET'])
 def get_social():
-    """ gets all the social media accounts
-
-    """
-
+    """gets all the social media accounts"""
     social = Social.query.all()
     social_list = []
     for soc in social:
@@ -1101,10 +1046,7 @@ def get_social():
 @main.route('/add_spare_request', methods=['POST'])
 @jwt_required()
 def add_spare_request():
-    """ ads a spare part request
-
-    """
-
+    """ads a spare part request"""
     if request.method == 'POST':
         data = request.json
         if not data:
@@ -1130,10 +1072,7 @@ def add_spare_request():
 
 @main.route('/get_spares_requests', methods=['GET'])
 def get_all_requests():
-    """ fetches all the spare part requests
-
-    """
-
+    """fetches all the spare part requests"""
     try:
         all_requests = SpareRequests.query.all()
 
@@ -1162,7 +1101,6 @@ def delete_spare_request(request_id):
         request_id (int): the ID of the spare part
 
     """
-
     try:
         spare_request = SpareRequests.query.get(request_id)
 
@@ -1189,10 +1127,7 @@ def delete_spare_request(request_id):
 @main.route('/add-email', methods=['POST'])
 @jwt_required()
 def add_email():
-    """ adding email configurations
-
-    """
-
+    """adding email configurations"""
     data = request.json
     new_email = EmailConfgurations(email=data['email'], password=data['password'])
 
@@ -1212,10 +1147,7 @@ def add_email():
 @main.route('/update-email/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_email(id):
-    """ updating email config
-
-    """
-
+    """updating email config"""
     data = request.json
     email_to_update = EmailConfgurations.query.get(id)
 
@@ -1243,10 +1175,7 @@ def update_email(id):
 
 @main.route('/get-email-configurations/<int:id>', methods=['GET'])
 def get_email_configurations(id):
-    """ fetches the email config
-
-    """
-
+    """fetches the email config"""
     email_config = EmailConfgurations.query.get(id)
 
     if email_config:
@@ -1266,10 +1195,7 @@ def get_email_configurations(id):
 @main.route('/add-credentials', methods=['POST'])
 @jwt_required()
 def add_credentials():
-    """ adding a password
-
-    """
-
+    """adding a password"""
     data = request.json
     hashed_password = bcrypt.hashpw(
         data['password'].encode('utf-8'),
@@ -1293,10 +1219,7 @@ def add_credentials():
 @main.route('/update-credentials/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_credentials(id):
-    """ updating a password
-
-    """
-
+    """updating a password"""
     data = request.json
     credentials_to_update = LoginCredentials.query.get(id)
 
@@ -1327,10 +1250,7 @@ def update_credentials(id):
 
 @main.route('/get-credentials/<int:id>', methods=['GET'])
 def get_credentials(id):
-    """ fetches the password
-
-    """
-    
+    """fetches the password"""
     credentials = LoginCredentials.query.get(id)
 
     if credentials:
