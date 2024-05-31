@@ -17,7 +17,7 @@ class Cars(db.Model):
         is_exclusive (str): Whether the car is exclusive or not.
         images (list): A list of CarImages objects associated with the car.
     """
-    
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.String(255), nullable=False)
