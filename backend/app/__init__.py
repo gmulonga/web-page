@@ -22,9 +22,10 @@ def create_app():
     CORS(app, origins="http://localhost:3000")
 
     with app.app_context():
-        from . import routes
-        app.register_blueprint(routes.main)
+        from .routes import register_blueprints
+        register_blueprints(app)
 
-        db.create_all()
+        if not db.engine.table_names():
+            db.create_all()
 
     return app
