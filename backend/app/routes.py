@@ -17,7 +17,7 @@ USERS = {'carconnect': '1234'}
 
 
 @main.route('/check-auth', methods=['GET'])
-@jwt_required() 
+@jwt_required()
 def check_auth():
     return jsonify({'isAuthenticated': True})
 
@@ -48,6 +48,8 @@ def login():
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
         return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+    else:
+        return jsonify({"status": "error", "message": "Invalid request"}), 400
 
 @main.route('/logout')
 def logout():
@@ -147,6 +149,8 @@ def add_car():
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid request'}), 400
 
 
 @main.route('/cars/<int:id>', methods=['GET'])
@@ -473,6 +477,8 @@ def add_about_us():
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'message': 'Invalid request'}), 400
 
 
 @main.route('/get_about_us', methods=['GET'])
@@ -527,7 +533,7 @@ def delete_about_us(id):
 
 
 def send_email(email_receiver, email_subject, email_body):
-    email_configuration = EmailConfgurations.query.first()  
+    email_configuration = EmailConfgurations.query.first()
     if email_configuration:
         email_sender = email_configuration.email
         email_password = email_configuration.password
@@ -548,7 +554,7 @@ def send_email(email_receiver, email_subject, email_body):
 
 
 @main.route('/send-emails', methods=['POST']) 
-def send_emails(): 
+def send_emails():
     try:
         subscribed_emails = SubscribedEmails.query.all()
 
@@ -592,6 +598,8 @@ def add_partner():
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid request'}), 400
 
 
 @main.route('/get_partners', methods=['GET'])
@@ -619,6 +627,8 @@ def delete_partner(partner_id):
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": str(e)}), 400
+    else:
+        return jsonify({"error": "Invalid request method"}), 405
 
 
 @main.route('/add_spare_part', methods=['POST'])
@@ -760,6 +770,8 @@ def add_spare_request():
         db.session.commit()
 
         return jsonify({'message': 'Spare request added successfully'}), 201
+    else:
+        return jsonify({'message': 'Invalid request'}), 400
 
 
 @main.route('/get_spares_requests', methods=['GET'])
@@ -795,7 +807,7 @@ def delete_spare_request(request_id):
             return jsonify({'message': 'Spare request deleted successfully'}), 200
         return jsonify({'message': 'Spare request not found'}), 404
     except Exception as e:
-        db.session.rollback()  
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
     finally:
         db.session.close()
