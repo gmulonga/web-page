@@ -1,7 +1,10 @@
 from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required, create_access_token
 import bcrypt
-from .models import Cars, Testimonies, LoginCredentials, CustomerRequests, SubscribedEmails, AboutUs, EmailConfgurations, Patners, SpareParts, Social, SpareRequests, CarImages, db
+from .models import (
+    Cars, Testimonies, LoginCredentials, CustomerRequests, SubscribedEmails, AboutUs,
+    EmailConfgurations, Patners, SpareParts, Social, SpareRequests, CarImages, db
+)
 import json
 from werkzeug.security import generate_password_hash
 import smtplib
@@ -41,22 +44,47 @@ def admin():
 def login():
     if request.method == 'POST':
         data = request.get_json()
+        if not data:
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": "Invalid input"
+                }
+            ), 400
+
         username = data.get('username')
         password = data.get('password')
 
         if not username or not password:
-            return jsonify({"status": "error", "message": "Missing username or password"}), 400
+            return jsonify({
+                "status": "error",
+                "message": "Missing username or password"
+            }), 400
 
         if db.session.query(LoginCredentials).count() == 0:
             if USERS.get(username) == password:
                 access_token = create_access_token(identity=username)
                 return jsonify({"status": "success", "access_token": access_token})
-            return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": "Invalid credentials"
+                }
+            ), 401
+
         user = LoginCredentials.query.filter_by(username=username).first()
-        if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        if user and bcrypt.checkpw(
+            password.encode('utf-8'), 
+            user.password.encode('utf-8')
+        ):
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
-        return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+        return jsonify(
+            {
+                "status": "error",
+                "message": "Invalid credentials"
+            }
+        ), 401
 
 
 @main.route('/logout')
@@ -149,7 +177,12 @@ def add_car():
             db.session.add(new_car)
             db.session.commit()
 
-            return jsonify({"status": "success", "message": "Car added successfully"})
+            return jsonify(
+                {
+                    "status": "success",
+                    "message": "Car added successfully"
+                }
+            )
 
         except Exception as e:
             db.session.rollback()
@@ -224,7 +257,11 @@ def get_evs_by_name(name):
     evs_cars = Cars.query.filter_by(type='EVs', name=name).all()
 
     if not evs_cars:
-        return jsonify({"message": "No EVs found with the specified name"}), 404
+        return jsonify(
+            {
+                "message": "No EVs found with the specified name"
+            }
+        ), 404
 
     evs_list = []
     for car in evs_cars:
@@ -304,8 +341,17 @@ def delete_car(id):
                 db.session.delete(image)
             db.session.delete(car)
             db.session.commit()
-            return jsonify({"status": "success", "message": "Car and images deleted successfully"})
-        return jsonify({"status": "error", "message": "Car not found"}), 404
+            return jsonify(
+                {
+                    "status": "success",
+                    "message": "Car and images deleted successfully"
+                }
+            )
+        return jsonify(
+            {
+                "status": "error", "message": "Car not found"
+            }
+        ), 404
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -338,8 +384,18 @@ def delete_customer_request(id):
         if customer_request:
             db.session.delete(customer_request)
             db.session.commit()
-            return jsonify({"status": "success", "message": "Customer request deleted successfully"})
-        return jsonify({"status": "error", "message": "Customer request not found"}), 404
+            return jsonify(
+                {
+                    "status": "success",
+                    "message": "Customer request deleted successfully"
+                }
+            )
+        return jsonify(
+            {
+                "status": "error",
+                "message": "Customer request not found"
+            }
+        ), 404
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -349,7 +405,10 @@ def delete_customer_request(id):
 @jwt_required()
 def add_testimonial():
     data = request.json
-    testimonial = Testimonies(name=data['name'], testimony=data['testimony'])
+    testimonial = Testimonies(
+        name=data['name'],
+        testimony=data['testimony']
+    )
     db.session.add(testimonial)
     db.session.commit()
     return 'Testimony created', 201
@@ -420,7 +479,11 @@ def add_request():
         db.session.add(new_request)
         db.session.commit()
 
-        return jsonify({'message': 'Request added successfully'}), 201
+        return jsonify(
+            {
+                'message': 'Request added successfully'
+            }
+        ), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -470,14 +533,22 @@ def add_about_us():
         about_data = request.get_json()
 
         if 'about' not in about_data:
-            return jsonify({'message': 'Missing "about" field'}), 400
+            return jsonify(
+                {
+                    'message': 'Missing "about" field'
+                }
+            ), 400
 
         new_about = AboutUs(about=about_data['about'])
 
         try:
             db.session.add(new_about)
             db.session.commit()
-            return jsonify({'message': 'About Us added successfully'}), 201
+            return jsonify(
+                {
+                    'message': 'About Us added successfully'
+                }
+            ), 201
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
@@ -503,13 +574,21 @@ def edit_about_us(id):
     try:
         about_us = AboutUs.query.get(id)
         if not about_us:
-            return jsonify({'message': 'About Us not found'}), 404
+            return jsonify(
+                {
+                    'message': 'About Us not found'
+                }
+            ), 404
 
         about_content = request.json.get('about')
         about_us.about = about_content
         db.session.commit()
 
-        return jsonify({'message': 'About Us updated successfully'}), 204
+        return jsonify(
+            {
+                'message': 'About Us updated successfully'
+            }
+        ), 204
 
     except SQLAlchemyError as e:
         db.session.rollback()
@@ -573,10 +652,18 @@ def send_emails():
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
 
-        return jsonify({"message": "Emails sent successfully."}), 200
+        return jsonify(
+            {
+                "message": "Emails sent successfully."
+            }
+        ), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify(
+            {
+                "error": str(e)
+            }
+        ), 500
 
 
 @main.route('/add_partner', methods=['POST'])
@@ -595,7 +682,12 @@ def add_partner():
             db.session.add(new_partner)
             db.session.commit()
 
-            return jsonify({"status": "success", "message": "Partner added successfully"})
+            return jsonify(
+                {
+                    "status": "success",
+                    "message": "Partner added successfully"
+                }
+            )
 
         except Exception as e:
             db.session.rollback()
@@ -624,13 +716,21 @@ def delete_partner(partner_id):
             if partner:
                 db.session.delete(partner)
                 db.session.commit()
-                return jsonify({"message": "Partner deleted successfully!"}), 200
+                return jsonify(
+                    {
+                        "message": "Partner deleted successfully!"
+                    }
+                ), 200
             return jsonify({"message": "Partner not found!"}), 404
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": str(e)}), 400
     else:
-        return jsonify({"error": "Invalid request method"}), 405
+        return jsonify(
+            {
+                "error": "Invalid request method"
+            }
+        ), 405
 
 
 @main.route('/add_spare_part', methods=['POST'])
@@ -645,7 +745,11 @@ def add_spare_part():
     )
     db.session.add(new_spare_part)
     db.session.commit()
-    return jsonify({"message": "Spare part added successfully!"}), 201
+    return jsonify(
+        {
+            "message": "Spare part added successfully!"
+        }
+    ), 201
 
 
 @main.route('/get_spare_parts', methods=['GET'])
@@ -660,7 +764,11 @@ def get_spare_parts():
             'chassis_no': part.chassis_no,
             'part_no': part.part_no
         })
-    return jsonify({"spare_parts": spare_parts_list})
+    return jsonify(
+        {
+            "spare_parts": spare_parts_list
+        }
+    )
 
 
 @main.route('/get_spare_part/<int:spare_id>', methods=['GET'])
@@ -677,7 +785,11 @@ def get_spare_part(spare_id):
                 'part_no': spare_part.part_no
             }
             return jsonify(spare_part_data)
-        return jsonify({'message': 'Spare part not found'}), 404
+        return jsonify(
+            {
+                'message': 'Spare part not found'
+            }
+        ), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -686,7 +798,11 @@ def get_spare_part(spare_id):
 def get_spare_parts_by_make_and_year(make, year):
     spare_parts = SpareParts.query.filter_by(make=make, year=year).all()
     if not spare_parts:
-        return jsonify({"message": "No spare parts found"}), 404
+        return jsonify(
+            {
+                "message": "No spare parts found"
+            }
+        ), 404
 
     spare_parts_list = []
     for part in spare_parts:
@@ -708,7 +824,11 @@ def delete_spare_part(id):
     if spare_part:
         db.session.delete(spare_part)
         db.session.commit()
-        return jsonify({"message": "Spare part deleted successfully!"}), 200
+        return jsonify(
+            {
+                "message": "Spare part deleted successfully!"
+            }
+        ), 200
     return jsonify({"message": "Spare part not found"}), 404
 
 
@@ -736,7 +856,11 @@ def delete_social():
         for social in social_records:
             db.session.delete(social)
         db.session.commit()
-        return jsonify({"message": "All social records deleted successfully!"}), 200
+        return jsonify(
+            {
+                "message": "All social records deleted successfully!"
+            }
+        ), 200
     return jsonify({"message": "No social records found"}), 404
 
 
@@ -760,9 +884,13 @@ def get_social():
 def add_spare_request():
     if request.method == 'POST':
         data = request.json
-
         if not data:
-            return jsonify({"status": "error", "message": "Invalid input"}), 400
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": "Invalid input"
+                }
+            ), 400
 
         new_request = SpareRequests(
             name=data['name'],
@@ -774,7 +902,11 @@ def add_spare_request():
         db.session.add(new_request)
         db.session.commit()
 
-        return jsonify({'message': 'Spare request added successfully'}), 201
+        return jsonify(
+            {
+                'message': 'Spare request added successfully'
+            }
+        ), 201
 
 
 @main.route('/get_spares_requests', methods=['GET'])
@@ -807,8 +939,16 @@ def delete_spare_request(request_id):
         if spare_request:
             db.session.delete(spare_request)
             db.session.commit()
-            return jsonify({'message': 'Spare request deleted successfully'}), 200
-        return jsonify({'message': 'Spare request not found'}), 404
+            return jsonify(
+                {
+                    'message': 'Spare request deleted successfully'
+                }
+            ), 200
+        return jsonify(
+            {
+                'message': 'Spare request not found'
+            }
+        ), 404
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -825,7 +965,11 @@ def add_email():
     try:
         db.session.add(new_email)
         db.session.commit()
-        return jsonify({"message": "Email configuration added successfully"})
+        return jsonify(
+            {
+                "message": "Email configuration added successfully"
+            }
+        )
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -843,12 +987,20 @@ def update_email(id):
 
         try:
             db.session.commit()
-            return jsonify({"message": "Email configuration updated successfully"})
+            return jsonify(
+                {
+                    "message": "Email configuration updated successfully"
+                }
+            )
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
     else:
-        return jsonify({"message": "Email configuration not found"}), 404
+        return jsonify(
+            {
+                "message": "Email configuration not found"
+            }
+        ), 404
 
 
 @main.route('/get-email-configurations/<int:id>', methods=['GET'])
@@ -856,17 +1008,32 @@ def get_email_configurations(id):
     email_config = EmailConfgurations.query.get(id)
 
     if email_config:
-        return jsonify({'email': email_config.email, 'password': email_config.password})
-    return jsonify({'message': 'Email configuration not found'}), 404
+        return jsonify(
+            {
+                'email': email_config.email,
+                'password': email_config.password
+            }
+        )
+    return jsonify(
+        {
+            'message': 'Email configuration not found'
+        }
+    ), 404
 
 
 @main.route('/add-credentials', methods=['POST'])
 @jwt_required()
 def add_credentials():
     data = request.json
-    hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(
+        data['password'].encode('utf-8'),
+        bcrypt.gensalt()
+    )
 
-    new_credentials = LoginCredentials(username=data['username'], password=hashed_password.decode('utf-8'))
+    new_credentials = LoginCredentials(
+        username=data['username'],
+        password=hashed_password.decode('utf-8')
+    )
 
     try:
         db.session.add(new_credentials)
@@ -892,12 +1059,20 @@ def update_credentials(id):
 
         try:
             db.session.commit()
-            return jsonify({"message": "Login credentials updated successfully"})
+            return jsonify(
+                {
+                    "message": "Login credentials updated successfully"
+                }
+            )
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
     else:
-        return jsonify({"message": "Login credentials not found"}), 404
+        return jsonify(
+            {
+                "message": "Login credentials not found"
+            }
+        ), 404
 
 
 @main.route('/get-credentials/<int:id>', methods=['GET'])
@@ -905,5 +1080,10 @@ def get_credentials(id):
     credentials = LoginCredentials.query.get(id)
 
     if credentials:
-        return jsonify({'username': credentials.username, 'password_hash': credentials.password})
+        return jsonify(
+            {
+                'username': credentials.username,
+                'password_hash': credentials.password
+            }
+        )
     return jsonify({'message': 'Credentials not found'}), 404
