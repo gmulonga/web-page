@@ -190,7 +190,7 @@ class LoginCredentials(db.Model):
         username (str): The username associated with the login credentials.
         password (str): The password associated with the login credentials.
     """
-    
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
