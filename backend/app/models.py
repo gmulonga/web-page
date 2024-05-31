@@ -17,6 +17,7 @@ class Cars(db.Model):
         is_exclusive (str): Whether the car is exclusive or not.
         images (list): A list of CarImages objects associated with the car.
     """
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.String(255), nullable=False)
@@ -190,7 +191,7 @@ class LoginCredentials(db.Model):
         username (str): The username associated with the login credentials.
         password (str): The password associated with the login credentials.
     """
-    
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
