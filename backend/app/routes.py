@@ -15,16 +15,19 @@ errorMessage = "An error occurred"
 
 USERS = {'carconnect': '1234'}
 
+
 @main.route('/check-auth', methods=['GET'])
 @jwt_required() 
 def check_auth():
     return jsonify({'isAuthenticated': True})
+
 
 @main.route('/admin')
 def admin():
     if 'username' in session:
         return "Admin Page"
     return redirect(url_for('main.login'))
+
 
 @main.route('/login', methods=['POST'])
 def login():
@@ -51,12 +54,12 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('main.home'))
 
+
 @main.route('/', methods=['GET'])
 def home():
     cars = Cars.query.all()
     testimonials = Testimonies.query.all()
 
-    # getting all the cars
     car_list = []
     for car in cars:
         car_dict = {
@@ -69,7 +72,6 @@ def home():
         }
         car_list.append(car_dict)
 
-    # getting all the testimonies
     testimony_list = []
     for testimony in testimonials:
         testimony_dict = {
@@ -114,8 +116,6 @@ def get_cars():
     return jsonify(cars_list)
 
 
-# adding a car to the database
-
 @main.route('/add-car', methods=['POST'])
 @jwt_required()
 def add_car():
@@ -149,7 +149,6 @@ def add_car():
             return jsonify({'error': str(e)}), 500
 
 
-# getting a car with a specific ID
 @main.route('/cars/<int:id>', methods=['GET'])
 def get_car(id):
     car = Cars.query.get(id)
@@ -175,7 +174,6 @@ def get_car(id):
     return jsonify({"message": "Car not found"}), 404
 
 
-# getting all cars with a specific name
 @main.route('/get-cars/<string:name>', methods=['GET'])
 def get_cars_by_name(name):
     cars = Cars.query.filter_by(name=name).all()
@@ -212,7 +210,6 @@ def get_car_images(car_id):
     return jsonify(image_data)
 
 
-# getting all EVs by name
 @main.route('/evs/<string:name>', methods=['GET'])
 def get_evs_by_name(name):
     evs_cars = Cars.query.filter_by(type='EVs', name=name).all()
@@ -241,8 +238,6 @@ def get_evs_by_name(name):
     return jsonify(evs_list)
 
 
-# getting all EVS
-
 @main.route('/evs', methods=['GET'])
 def get_evs():
     evs_cars = Cars.query.filter_by(type='EVs').all()
@@ -266,7 +261,6 @@ def get_evs():
     return jsonify(evs_list)
 
 
-# getting all exclusive offers
 @main.route('/exclusive-cars', methods=['GET'])
 def get_exclusive_cars():
     exclusive_cars = Cars.query.filter_by(is_exclusive='True').all()
@@ -290,7 +284,6 @@ def get_exclusive_cars():
     return jsonify(exclusive_list)
 
 
-# Deleting a car with a specific id
 @main.route('/delete-car/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_car(id):
@@ -309,8 +302,6 @@ def delete_car(id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-
-# ---------- GETTING CUSTOMER REQUEST -----------
 
 @main.route('/customer-requests', methods=['GET'])
 def get_customer_requests():
@@ -346,9 +337,6 @@ def delete_customer_request(id):
         return jsonify({'error': str(e)}), 500
 
 
-#  ------------ TESTIMONIES ROUTES -----------
-
-# Adding a new testimonial
 @main.route('/add-testimony', methods=['POST'])
 @jwt_required()
 def add_testimonial():
@@ -362,7 +350,6 @@ def add_testimonial():
 @main.route('/testimonies', methods=['GET'])
 def get_testimonials():
     testimonials = Testimonies.query.all()
-    # Create a list of dictionaries representing each testimonial
     testimonials_data = [
         {
             'id': testimonial.id,
@@ -374,19 +361,16 @@ def get_testimonials():
     return jsonify(testimonials_data)
 
 
-# Edit route for a specific testimony
 @main.route('/testimonies/<int:id>', methods=['PUT'])
 @jwt_required()
 def edit_testimony(id):
     try:
         testimony = Testimonies.query.get_or_404(id)
 
-        # Get new data from the request JSON
         data = request.json
         new_name = data.get('name')
         new_testimony = data.get('testimony')
 
-        # Update the testimony with new data
         if new_name is not None:
             testimony.name = new_name
         if new_testimony is not None:
@@ -399,7 +383,6 @@ def edit_testimony(id):
         return jsonify({'error': str(e)}), 500
 
 
-# Delete route for a specific testimony
 @main.route('/testimonies/<int:testimony_id>', methods=['DELETE'])
 @jwt_required()
 def delete_testimony(testimony_id):
@@ -412,8 +395,6 @@ def delete_testimony(testimony_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-
-# adding customer requests in the database
 
 @main.route('/add_request', methods=['POST'])
 @jwt_required()
@@ -436,8 +417,6 @@ def add_request():
         return jsonify({'error': str(e)}), 500
 
 
-# get all the requests in the database
-
 @main.route('/get_requests', methods=['GET'])
 def get_requests():
     try:
@@ -459,8 +438,6 @@ def get_requests():
         return jsonify({'error': str(e)}), 500
 
 
-# ------ checking if the email is already in the database
-
 @main.route('/subscribe', methods=['POST'])
 @jwt_required()
 def subscribe():
@@ -468,7 +445,6 @@ def subscribe():
     email = data['email']
 
     if email:
-        # Check if the email is not already subscribed
         if not SubscribedEmails.query.filter_by(email=email).first():
             subscribed_email = SubscribedEmails(email=email)
             db.session.add(subscribed_email)
@@ -479,13 +455,10 @@ def subscribe():
     return 'Invalid email address.', 400
 
 
-# -------------- ABOUT US -------------------
-
 @main.route('/add_about_us', methods=['POST'])
 @jwt_required()
 def add_about_us():
     if request.method == 'POST':
-        # Assuming you're sending JSON data in the request body
         about_data = request.get_json()
 
         if 'about' not in about_data:
@@ -502,13 +475,10 @@ def add_about_us():
             return jsonify({'error': str(e)}), 500
 
 
-# get all about us
 @main.route('/get_about_us', methods=['GET'])
 def get_about_us():
     try:
         about_us_data = AboutUs.query.all()
-
-        # Convert the data to a list of dictionaries
         about_us_list = [{'id': item.id, 'about': item.about}
                          for item in about_us_data]
 
@@ -516,8 +486,6 @@ def get_about_us():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# edit about us
 
 @main.route('/edit_about_us/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -538,8 +506,6 @@ def edit_about_us(id):
         return jsonify({'message': 'Failed to update About Us'}), 500
 
 
-# delete about us
-
 @main.route('/delete_about_us/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_about_us(id):
@@ -558,9 +524,6 @@ def delete_about_us(id):
         db.session.rollback()
         print(f"Error deleting About Us: {e}")
         return jsonify({'message': 'Failed to delete About Us'}), 500
-
-
-# ------------ GETTING ALL THE EMAILS FROM THE DATABASE -----------
 
 
 def send_email(email_receiver, email_subject, email_body):
@@ -584,14 +547,11 @@ def send_email(email_receiver, email_subject, email_body):
         print("No email configuration found.")
 
 
-# sending emails to the subscribed customers
-@main.route('/send-emails', methods=['POST'])  # Change method to POST
-def send_emails():  # Rename the function for clarity
+@main.route('/send-emails', methods=['POST']) 
+def send_emails(): 
     try:
-        # Fetch all the subscribed emails from the database
         subscribed_emails = SubscribedEmails.query.all()
 
-        # Extract the email addresses from the fetched data
         emails = [email.email for email in subscribed_emails]
 
         data = request.get_json()
@@ -599,36 +559,30 @@ def send_emails():  # Rename the function for clarity
         email_subject = data['subject']
         email_body = data['body']
 
-        # Send email to each email address
         for email_receiver in emails:
             try:
                 send_email(email_receiver, email_subject, email_body)
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
 
-        # Return a success response
         return jsonify({"message": "Emails sent successfully."}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-# -------------- add and delete patner -----------------
 @main.route('/add_partner', methods=['POST'])
 @jwt_required()
 def add_partner():
     if request.method == 'POST':
         try:
-            # Parse the request payload
             data = request.json
 
-            # Extract partner data
             partner_data = {
                 'name': data.get('name'),
                 'image': data.get('image_base64')
             }
 
-            # Create a new partner instance
             new_partner = Patners(**partner_data)
             db.session.add(new_partner)
             db.session.commit()
@@ -667,8 +621,6 @@ def delete_partner(partner_id):
             return jsonify({"error": str(e)}), 400
 
 
-# spare parts routes
-
 @main.route('/add_spare_part', methods=['POST'])
 @jwt_required()
 def add_spare_part():
@@ -699,8 +651,6 @@ def get_spare_parts():
     return jsonify({"spare_parts": spare_parts_list})
 
 
-# get spare part by id
-
 @main.route('/get_spare_part/<int:spare_id>', methods=['GET'])
 def get_spare_part(spare_id):
     try:
@@ -720,14 +670,11 @@ def get_spare_part(spare_id):
         return jsonify({'error': str(e)}), 500
 
 
-
-# get spare part by year and make 
-
 @main.route('/get_spare_parts/<string:make>/<string:year>', methods=['GET'])
 def get_spare_parts_by_make_and_year(make, year):
     spare_parts = SpareParts.query.filter_by(make=make, year=year).all()
     if not spare_parts:
-        return jsonify({"message": "No spare parts found for the given make and year"}), 404
+        return jsonify({"message": "No spare parts found"}), 404
 
     spare_parts_list = []
     for part in spare_parts:
@@ -742,7 +689,6 @@ def get_spare_parts_by_make_and_year(make, year):
     return jsonify({"spare_parts": spare_parts_list})
 
 
-# delete spare part form the DB
 @main.route('/delete_spare_part/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_spare_part(id):
@@ -754,7 +700,6 @@ def delete_spare_part(id):
     return jsonify({"message": "Spare part not found"}), 404
 
 
-# add social media platforms
 @main.route('/add_social', methods=['POST'])
 @jwt_required()
 def add_social():
@@ -770,7 +715,6 @@ def add_social():
     return jsonify({"message": "social added successfully!"}), 201
 
 
-# delete the social media platfrom
 @main.route('/delete_social', methods=['DELETE'])
 @jwt_required()
 def delete_social():
@@ -784,7 +728,6 @@ def delete_social():
     return jsonify({"message": "No social records found"}), 404
 
 
-# get all the social media platform form the DB 
 @main.route('/get_social', methods=['GET'])
 def get_social():
     social = Social.query.all()
@@ -800,7 +743,6 @@ def get_social():
     return jsonify({"social": social_list})
 
 
-# add spares request
 @main.route('/add_spare_request', methods=['POST'])
 @jwt_required()
 def add_spare_request():
@@ -820,7 +762,6 @@ def add_spare_request():
         return jsonify({'message': 'Spare request added successfully'}), 201
 
 
-# get all spare part requests
 @main.route('/get_spares_requests', methods=['GET'])
 def get_all_requests():
     try:
@@ -842,8 +783,6 @@ def get_all_requests():
         return jsonify({'error': str(e)}), 500
 
 
-# delete spare part request
-
 @main.route('/delete_spare_request/<int:request_id>', methods=['DELETE'])
 @jwt_required()
 def delete_spare_request(request_id):
@@ -856,14 +795,12 @@ def delete_spare_request(request_id):
             return jsonify({'message': 'Spare request deleted successfully'}), 200
         return jsonify({'message': 'Spare request not found'}), 404
     except Exception as e:
-        db.session.rollback()  # Rollback changes if an error occurs
+        db.session.rollback()  
         return jsonify({'error': str(e)}), 500
     finally:
         db.session.close()
 
 
-# ---------EMAIL CONFIGURATION---------
-# Add route
 @main.route('/add-email', methods=['POST'])
 @jwt_required()
 def add_email():
@@ -879,7 +816,6 @@ def add_email():
         return jsonify({'error': str(e)}), 500
 
 
-# Update route
 @main.route('/update-email/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_email(id):
@@ -909,8 +845,6 @@ def get_email_configurations(id):
     return jsonify({'message': 'Email configuration not found'}), 404
 
 
-# ---------- SETTING PASSWORD ------------
-# Add route
 @main.route('/add-credentials', methods=['POST'])
 @jwt_required()
 def add_credentials():
@@ -927,8 +861,6 @@ def add_credentials():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-
-# Update route
 
 @main.route('/update-credentials/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -951,7 +883,6 @@ def update_credentials(id):
             return jsonify({'error': str(e)}), 500
     else:
         return jsonify({"message": "Login credentials not found"}), 404
-
 
 
 @main.route('/get-credentials/<int:id>', methods=['GET'])
