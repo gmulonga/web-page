@@ -8,10 +8,18 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 from flask_sqlalchaemy import SQLAlchemyError
+import logging
+
 
 main = Blueprint('main', __name__)
 
 errorMessage = "An error occurred"
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler()])
+
+logger = logging.getLogger(__name__)
 
 USERS = {'carconnect': '1234'}
 
@@ -36,20 +44,17 @@ def login():
         username = data.get('username')
         password = data.get('password')
 
-        # Check if LoginCredentials table is empty
         if db.session.query(LoginCredentials).count() == 0:
             if USERS.get(username) == password:
                 access_token = create_access_token(identity=username)
                 return jsonify({"status": "success", "access_token": access_token})
             return jsonify({"status": "error", "message": "Invalid credentials"}), 401
-        # Look up the username in the LoginCredentials table
         user = LoginCredentials.query.filter_by(username=username).first()
         if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
         return jsonify({"status": "error", "message": "Invalid credentials"}), 401
-    else:
-        return jsonify({"status": "error", "message": "Invalid request"}), 400
+
 
 @main.route('/logout')
 def logout():
@@ -123,10 +128,8 @@ def get_cars():
 def add_car():
     if request.method == 'POST':
         try:
-            # Parse the request payload
             data = request.json
 
-            # Extract car data
             car_data = {
                 'name': data.get('name'),
                 'price': data.get('price'),
@@ -139,7 +142,6 @@ def add_car():
                 'is_exclusive': data.get('is_exclusive')
             }
 
-            # Create a new car instance
             new_car = Cars(**car_data)
             db.session.add(new_car)
             db.session.commit()
@@ -302,7 +304,6 @@ def delete_car(id):
             return jsonify({"status": "success", "message": "Car and images deleted successfully"})
         return jsonify({"status": "error", "message": "Car not found"}), 404
     except Exception as e:
-        print('An error occurred:', str(e))
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
@@ -509,13 +510,12 @@ def edit_about_us(id):
 
     except SQLAlchemyError as e:
         db.session.rollback()
-        return jsonify({'message': 'Failed to update About Us'}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 @main.route('/delete_about_us/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_about_us(id):
-    print(f"Received request to delete About Us with ID: {id}")
     try:
         about_us = AboutUs.query.get(id)
         if not about_us:
@@ -528,8 +528,7 @@ def delete_about_us(id):
 
     except SQLAlchemyError as e:
         db.session.rollback()
-        print(f"Error deleting About Us: {e}")
-        return jsonify({'message': 'Failed to delete About Us'}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 def send_email(email_receiver, email_subject, email_body):
@@ -550,10 +549,10 @@ def send_email(email_receiver, email_subject, email_body):
             server.login(email_sender, email_password)
             server.sendmail(email_sender, email_receiver, em.as_string())
     else:
-        print("No email configuration found.")
+        logger.error("No email configuration found.")
 
 
-@main.route('/send-emails', methods=['POST']) 
+@main.route('/send-emails', methods=['POST'])
 def send_emails():
     try:
         subscribed_emails = SubscribedEmails.query.all()
@@ -742,12 +741,12 @@ def delete_social():
 def get_social():
     social = Social.query.all()
     social_list = []
-    for social in social:
+    for soc in social:
         social_list.append({
-            'twitter': social.twitter,
-            'email': social.email,
-            'instagram': social.instagram,
-            'phone': social.phone,
+            'twitter': soc.twitter,
+            'email': soc.email,
+            'instagram': soc.instagram,
+            'phone': soc.phone,
 
         })
     return jsonify({"social": social_list})
@@ -770,8 +769,6 @@ def add_spare_request():
         db.session.commit()
 
         return jsonify({'message': 'Spare request added successfully'}), 201
-    else:
-        return jsonify({'message': 'Invalid request'}), 400
 
 
 @main.route('/get_spares_requests', methods=['GET'])
