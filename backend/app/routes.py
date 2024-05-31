@@ -44,6 +44,9 @@ def login():
         username = data.get('username')
         password = data.get('password')
 
+        if not username or not password:
+            return jsonify({"status": "error", "message": "Missing username or password"}), 400
+
         if db.session.query(LoginCredentials).count() == 0:
             if USERS.get(username) == password:
                 access_token = create_access_token(identity=username)
@@ -757,6 +760,9 @@ def get_social():
 def add_spare_request():
     if request.method == 'POST':
         data = request.json
+
+        if not data:
+            return jsonify({"status": "error", "message": "Invalid input"}), 400
 
         new_request = SpareRequests(
             name=data['name'],
