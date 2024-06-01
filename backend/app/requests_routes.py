@@ -1,24 +1,11 @@
 from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required
 from .models import (
-    Testimonies, CustomerRequests, SpareParts, SpareRequests, db
+    Testimonies, CustomerRequests, SpareParts, SpareRequests, SubscribedEmails, db
 )
-from werkzeug.security import generate_password_hash
-import logging
-import os
 
 
 request_bp = Blueprint('request', __name__)
-
-errorMessage = "An error occurred"
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[logging.StreamHandler()])
-
-logger = logging.getLogger(__name__)
-
-USERS = os.environ.get("USERS")
 
 
 @request_bp.route('/check-auth', methods=['GET'])
@@ -402,3 +389,20 @@ def delete_spare_request(request_id):
         return jsonify({'error': str(e)}), 500
     finally:
         db.session.close()
+
+
+@request_bp.route('/subscribe', methods=['POST'])
+def subscribe():
+    """allows a user to subscribe to emails"""
+    data = request.json
+    email = data['email']
+
+    if email:
+        if not SubscribedEmails.query.filter_by(email=email).first():
+            subscribed_email = SubscribedEmails(email=email)
+            db.session.add(subscribed_email)
+            db.session.commit()
+
+            return 'You have been successfully subscribed.', 201
+        return 'You are already subscribed.', 200
+    return 'Invalid email address.', 400

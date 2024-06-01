@@ -22,7 +22,8 @@ def create_app():
     CORS(app, origins="http://localhost:3000")
 
     with app.app_context():
-        from . import cars_routes, requests_routes
+        from . import cars_routes, requests_routes, admin_routes
+        app.register_blueprint(admin_routes.main)
         app.register_blueprint(cars_routes.cars_bp)
         app.register_blueprint(requests_routes.request_bp)
 

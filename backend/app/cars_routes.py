@@ -1,85 +1,11 @@
 from flask import jsonify, Blueprint, request, session, redirect, url_for
-from flask_jwt_extended import jwt_required, create_access_token
-import bcrypt
+from flask_jwt_extended import jwt_required
 from .models import (
-    Cars, Testimonies, LoginCredentials, CarImages, db
+    Cars, Testimonies, CarImages, db
 )
-import logging
-import os
 
 
 cars_bp = Blueprint('cars', __name__)
-
-errorMessage = "An error occurred"
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[logging.StreamHandler()])
-
-logger = logging.getLogger(__name__)
-
-USERS = {'admin': '1234'}
-
-
-
-@cars_bp.route('/check-auth', methods=['GET'])
-@jwt_required()
-def check_auth():
-    return jsonify({'isAuthenticated': True})
-
-
-@cars_bp.route('/admin')
-def admin():
-    if 'username' in session:
-        return "Admin Page"
-    return redirect(url_for('main.login'))
-
-
-@cars_bp.route('/login', methods=['POST'])
-def login():
-    if request.method == 'POST':
-        data = request.get_json()
-        if not data:
-            return jsonify({
-                "status": "error",
-                "message": "Invalid input"
-            }), 400
-
-        username = data.get('username')
-        password = data.get('password')
-
-        if not username or not password:
-            return jsonify({
-                "status": "error",
-                "message": "Missing username or password"
-            }), 400
-
-        if db.session.query(LoginCredentials).count() == 0:
-            if USERS.get(username) == password:
-                access_token = create_access_token(identity=username)
-                return jsonify({"status": "success", "access_token": access_token})
-            return jsonify({
-                "status": "error",
-                "message": "Invalid credentials"
-            }), 401
-
-        user = LoginCredentials.query.filter_by(username=username).first()
-        if user and bcrypt.checkpw(
-            password.encode('utf-8'),
-            user.password.encode('utf-8')
-        ):
-            access_token = create_access_token(identity=username)
-            return jsonify({"status": "success", "access_token": access_token})
-        return jsonify({
-            "status": "error",
-            "message": "Invalid credentials"
-        }), 401
-
-
-@cars_bp.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('main.home'))
 
 
 @cars_bp.route('/', methods=['GET'])
