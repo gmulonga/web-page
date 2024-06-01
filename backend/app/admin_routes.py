@@ -229,6 +229,11 @@ def get_social():
 @main.route('/social/new', methods=['POST'])
 @jwt_required()
 def add_social():
+    """creates a new social media accounts
+
+    Returns:
+        json: returns json data for the social media accounts
+    """
     data = request.get_json()
     new_social = Social(
         phone=data['phone'],

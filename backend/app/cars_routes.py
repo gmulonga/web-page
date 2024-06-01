@@ -10,6 +10,11 @@ cars_bp = Blueprint('cars', __name__)
 
 @cars_bp.route('/', methods=['GET'])
 def home():
+    """Gets all the cars and testimonials
+
+    Returns:
+        json: returns a json data for the cars and testimonies
+    """
     cars = Cars.query.all()
     testimonials = Testimonies.query.all()
 
@@ -321,4 +326,3 @@ def delete_car(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-
