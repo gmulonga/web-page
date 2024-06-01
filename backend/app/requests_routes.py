@@ -324,12 +324,30 @@ def delete_spare_part(id):
     if spare_part:
         db.session.delete(spare_part)
         db.session.commit()
-        return jsonify(
-            {
-                "message": "Spare part deleted successfully!"
-            }
-        ), 200
+        return '', 204
     return jsonify({"message": "Spare part not found"}), 404
+
+
+@request_bp.route('/spare_requests', methods=['GET'])
+def get_all_requests():
+    """fetches all the spare part requests"""
+    try:
+        all_requests = SpareRequests.query.all()
+
+        requests_list = []
+        for req in all_requests:
+            request_data = {
+                'id': req.id,
+                'name': req.name,
+                'email': req.email,
+                'phone': req.phone,
+                'spare_id': req.spare_id
+            }
+            requests_list.append(request_data)
+
+        return jsonify({'requests': requests_list})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/spare_request/new', methods=['POST'])
@@ -358,28 +376,6 @@ def add_spare_request():
         }), 201
 
 
-@request_bp.route('/spares_requests', methods=['GET'])
-def get_all_requests():
-    """fetches all the spare part requests"""
-    try:
-        all_requests = SpareRequests.query.all()
-
-        requests_list = []
-        for req in all_requests:
-            request_data = {
-                'id': req.id,
-                'name': req.name,
-                'email': req.email,
-                'phone': req.phone,
-                'spare_id': req.spare_id
-            }
-            requests_list.append(request_data)
-
-        return jsonify({'requests': requests_list})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
 @request_bp.route('/spare_request/delete/<int:request_id>', methods=['DELETE'])
 @jwt_required()
 def delete_spare_request(request_id):
@@ -395,11 +391,7 @@ def delete_spare_request(request_id):
         if spare_request:
             db.session.delete(spare_request)
             db.session.commit()
-            return jsonify(
-                {
-                    'message': 'Spare request deleted successfully'
-                }
-            ), 200
+            return '', 204
         return jsonify(
             {
                 'message': 'Spare request not found'
