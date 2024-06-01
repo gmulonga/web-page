@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint, request, session, redirect, url_for
+from flask import jsonify, Blueprint, request
 from flask_jwt_extended import jwt_required
 from .models import (
     Cars, Testimonies, CarImages, db
@@ -321,4 +321,4 @@ def delete_car(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
+

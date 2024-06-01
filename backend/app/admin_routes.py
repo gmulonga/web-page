@@ -149,7 +149,7 @@ def get_partners():
         return jsonify(partners_data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-    
+
 
 @main.route('/partner/new', methods=['POST'])
 @jwt_required()
@@ -292,7 +292,7 @@ def add_email():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    
+
 
 @main.route('/email/configuration/update<int:id>', methods=['PUT'])
 @jwt_required()
@@ -321,7 +321,7 @@ def update_email(id):
                 "message": "Email configuration not found"
             }
         ), 404
-    
+
 
 @main.route('/credentials/<int:id>', methods=['GET'])
 def get_credentials(id):
