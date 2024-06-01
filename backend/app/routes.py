@@ -10,7 +10,6 @@ from werkzeug.security import generate_password_hash
 import smtplib
 import ssl
 from email.message import EmailMessage
-from flask_sqlalchaemy import SQLAlchemyError
 import logging
 
 
@@ -167,9 +166,9 @@ def add_car():
                 'year': data.get('year'),
                 'type': data.get('type'),
                 'description': data.get('description'),
-                'dimensions': json.dumps(data.get('dimensions')),
-                'technology': json.dumps(data.get('technology')),
-                'engine': json.dumps(data.get('engine')),
+                'dimensions': data.get('dimensions'),
+                'technology': data.get('technology'),
+                'engine': data.get('engine'),
                 'is_exclusive': data.get('is_exclusive')
             }
 
@@ -609,7 +608,6 @@ def get_requests():
 
 
 @main.route('/subscribe', methods=['POST'])
-@jwt_required()
 def subscribe():
     """allows a user to subscribe to emails"""
     data = request.json
@@ -698,7 +696,7 @@ def edit_about_us(id):
             }
         ), 204
 
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
@@ -722,7 +720,7 @@ def delete_about_us(id):
 
         return jsonify({'message': 'About Us deleted successfully'}), 204
 
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
