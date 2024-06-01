@@ -34,7 +34,7 @@ function UpdateCredentials() {
             });
 
             if (response.status === 200) {
-                console.log('Login credentials updated successfully.');
+                
             } else {
                 console.error('Failed to update login credentials.');
             }

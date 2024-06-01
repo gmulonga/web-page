@@ -49,7 +49,7 @@ function AddPartner() {
 
             if (response.ok) {
                 alert("Partner added successfully.");
-                console.log('Partner added successfully.');
+                
             } else {
                 alert("Failed to add partner.")
                 console.error('Failed to add partner.');
@@ -71,7 +71,7 @@ function AddPartner() {
             <label htmlFor='image' className='car-name'>Partner Logo:</label><br />
             <input type='file' accept='image/*' onChange={handleImageChange} />
             <br />
-            <div className="spaceabove"></div>
+            <div className="spaceabove" />
 
             <button onClick={handleAdd} className="add-button">Add Partner</button>
         </div>

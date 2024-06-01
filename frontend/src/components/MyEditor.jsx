@@ -63,7 +63,7 @@ const MyEditor = () => {
                     <button id='general-adm-page-button' onClick={() => showSection('general-adm-page')}>General <FontAwesomeIcon icon={faHouse} /></button>
                     <button id='adm-send-newsletter-button' onClick={() => showSection('adm-send-newsletter')}>Newsletter <FontAwesomeIcon icon={faEnvelope} /></button>
                     <button id='admin-add-car-button' onClick={() => showSection('admin-add-car')}>Customer Requests <FontAwesomeIcon icon={faCirclePlus} /></button>
-                    <div class="button-slider"></div>
+                    <div class="button-slider" />
                 </div>
             </div>
 

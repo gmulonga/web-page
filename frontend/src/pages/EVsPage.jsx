@@ -77,7 +77,7 @@ function EVspage() {
                                     placeholder="Search for a car"
                                 />
                                 <button type="submit" className="form-control submit">
-                                    <i className="fa fa-search searchIcon"></i>{" "}
+                                    <i className="fa fa-search searchIcon" />{" "}
                                     <span className="car-name-white">Search Car</span>
                                 </button>
                             </div>

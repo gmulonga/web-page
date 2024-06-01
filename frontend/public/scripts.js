@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
   carouselImages.forEach(function(image) {
     image.addEventListener("click", function() {
       const imgurl = this.dataset.imgbigurl;
-      console.log("i got clicked");
+      
       if (imgurl !== bigImage.src) {
         bigImage.src = imgurl;
       }

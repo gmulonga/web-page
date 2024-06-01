@@ -45,7 +45,7 @@ function SpareRequests() {
             const spareData = response.data;
             setSelectedSpare(spareData); // Set selected car data
             handleShow(); // Show the car modal
-            console.log('Car Data:', spareData);
+            
         } catch (error) {
             console.error('Error fetching spare data:', error);
         }

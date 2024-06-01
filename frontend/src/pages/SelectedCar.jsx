@@ -99,7 +99,7 @@ function SelectedCar() {
 
 
     useEffect(() => {
-        if (car && car.name) {
+        if (car?.name) {
             const fetchCarsByType = async () => {
                 try {
                     const response = await fetch(`${URL}/get-cars/${car.name}`);
@@ -196,9 +196,8 @@ function SelectedCar() {
                                     />
                                 </div>
 
-                                <OwlCarousel className="car-carousel" autoplay={true}>
-                                    {car &&
-                                        car.images.map((image, index) => (
+                                <OwlCarousel className="car-carousel" autoplay>
+                                    {car?.images.map((image, index) => (
                                             <SelectedCarImages
                                                 key={index}
                                                 image={image} // Use the image from the database
@@ -297,7 +296,7 @@ function SelectedCar() {
                         <div className="specs-items">
                             <div className="row">
                                 <div className="col-lg-6">
-                                    <img src="../images/engine.png" className="spec-image"></img>
+                                    <img src="../images/engine.png" className="spec-image" />
                                 </div>
                                 <div className="col-lg-6 center">
                                     <table className="specs-table">
@@ -316,7 +315,7 @@ function SelectedCar() {
                         <div className="specs-items">
                             <div className="row">
                                 <div className="col-lg-6">
-                                    <img src="../images/logo.jpeg" className="spec-image"></img>
+                                    <img src="../images/logo.jpeg" className="spec-image" />
                                 </div>
                                 <div className="col-lg-6 center">
                                     <table className="specs-table">
@@ -337,7 +336,7 @@ function SelectedCar() {
                         <div className="specs-items">
                             <div className="row">
                                 <div className="col-lg-6">
-                                    <img src="https://img.freepik.com/premium-vector/futuristic-autonomous-car-with-flat-design_23-2147884794.jpg" className="spec-image"></img>
+                                    <img src="https://img.freepik.com/premium-vector/futuristic-autonomous-car-with-flat-design_23-2147884794.jpg" className="spec-image" />
                                 </div>
                                 <div className="col-lg-6 center">
                                     <table className="specs-table">
@@ -358,7 +357,7 @@ function SelectedCar() {
 
 
             <div className="container similar-cars">
-                <h1 className="heading-label">Explore more on {car && car.name}</h1>
+                <h1 className="heading-label">Explore more on {car?.name}</h1>
 
                 <OwlCarousel
                     className="owl-theme"

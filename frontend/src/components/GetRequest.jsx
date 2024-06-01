@@ -45,7 +45,7 @@ function CustomerRequests() {
             const carData = response.data;
             setSelectedCar(carData); // Set selected car data
             handleShow(); // Show the car modal
-            console.log('Car Data:', carData);
+            
         } catch (error) {
             console.error('Error fetching car data:', error);
         }

@@ -33,7 +33,7 @@ function EmailConfiguration() {
             });
 
             if (response.ok) {
-                console.log('Email configuration added successfully.');
+                
             } else {
                 console.error('Failed to add email configuration.');
             }

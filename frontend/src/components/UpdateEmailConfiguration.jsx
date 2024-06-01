@@ -35,7 +35,7 @@ function UpdateEmail() {
             });
 
             if (response.status === 204) { // Check for 204 No Content status
-                console.log('Email updated successfully.');
+                
             } else {
                 console.error('Failed to update email.');
             }

@@ -105,13 +105,13 @@ function Navbar() {
     onClick={toggleMenu}
     aria-label="Toggle navigation"
   >
-    <i className="fas fa-bars text-white"></i>
+    <i className="fas fa-bars text-white" />
   </button>
   <div className={`collapse navbar-collapse justify-content-center ${isOpen ? 'show' : ''}`} id="navbarSupportedContent">
     <ul className="navbar-nav ml-auto">
       <div className="hori-selector">
-        <div className="left"></div>
-        <div className="right"></div>
+        <div className="left" />
+        <div className="right" />
       </div>
       <li className="nav-item active">
         <Link to="/" className="nav-link active" aria-current="page">Home</Link>
