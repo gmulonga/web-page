@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 USERS = {'admin': '1234'}
 
 
-@main.route('/check-auth', methods=['GET'])
+@admin_bp.route('/check-auth', methods=['GET'])
 @jwt_required()
 def check_auth():
     return jsonify({'isAuthenticated': True})

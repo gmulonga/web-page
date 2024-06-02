@@ -17,8 +17,5 @@ def create_app():
 
 
 if __name__ == '__main__':
-    # Create the Flask application instance
-    app = create_app()
-
-    # Run the application
-    app.run(debug=True)
+    application = create_app()
+    application.run(debug=True)
