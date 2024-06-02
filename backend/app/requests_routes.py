@@ -416,9 +416,9 @@ def delete_spare_request(request_id):
         db.session.close()
 
 
-@request_bp.route('/subscribe', methods=['POST']) 
-def subscribe(): 
-    """Allows a user to subscribe to emails""" 
+@request_bp.route('/subscribe', methods=['POST'])
+def subscribe():
+    """Allows a user to subscribe to emails"""
 
     try:
         data = request.json
