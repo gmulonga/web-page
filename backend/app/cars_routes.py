@@ -91,7 +91,7 @@ def add_car():
     """Adds a new car to the DB"""
     try:
         request.method == 'POST'
-            
+
         data = request.json
 
         car_data = {
@@ -116,7 +116,7 @@ def add_car():
                 "message": "Car added successfully"
             }
         ), 201
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
