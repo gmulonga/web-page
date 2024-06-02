@@ -88,23 +88,22 @@ def send_email(email_receiver, email_subject, email_body):
     """
     try:
         email_configuration = EmailConfigurations.query.first()
-        if email_configuration:
-            email_sender = email_configuration.email
-            email_password = email_configuration.password
+        email_configuration
+        email_sender = email_configuration.email
+        email_password = email_configuration.password
 
-            em = EmailMessage()
-            em["Subject"] = email_subject
-            em["From"] = email_sender
-            em["To"] = email_receiver
-            em.set_content(email_body)
+        em = EmailMessage()
+        em["Subject"] = email_subject
+        em["From"] = email_sender
+        em["To"] = email_receiver
+        em.set_content(email_body)
 
-            context = ssl.create_default_context()
+        context = ssl.create_default_context()
 
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-                server.login(email_sender, email_password)
-                server.sendmail(email_sender, email_receiver, em.as_string())
-            return jsonify({"Email sent"})
-        logger.error("No email configuration found.")
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+            server.login(email_sender, email_password)
+            server.sendmail(email_sender, email_receiver, em.as_string())
+        return jsonify({"Email sent"})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
