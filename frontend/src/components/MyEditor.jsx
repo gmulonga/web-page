@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse } from '@fortawesome/free-solid-svg-icons';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faCirclePlus, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import SendEmail from './SendingEmails';
 import MiniDrawer from './DrawerFunction';
 import CustomerRequests from './GetRequest';
-import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import SpareRequests from './GetSparesRequest';
 
 
@@ -59,11 +57,11 @@ const MyEditor = () => {
             {/* tab buttons */}
 
             <div className='navigation-buttons'>
-                <div class="button-container">
+                <div className="button-container">
                     <button id='general-adm-page-button' onClick={() => showSection('general-adm-page')}>General <FontAwesomeIcon icon={faHouse} /></button>
                     <button id='adm-send-newsletter-button' onClick={() => showSection('adm-send-newsletter')}>Newsletter <FontAwesomeIcon icon={faEnvelope} /></button>
                     <button id='admin-add-car-button' onClick={() => showSection('admin-add-car')}>Customer Requests <FontAwesomeIcon icon={faCirclePlus} /></button>
-                    <div class="button-slider"></div>
+                    <div className="button-slider"></div>
                 </div>
             </div>
 

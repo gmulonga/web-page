@@ -12,9 +12,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons';
-import { faCogs } from '@fortawesome/free-solid-svg-icons';
-import { faCar } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faCar, faCogs } from '@fortawesome/free-solid-svg-icons';
 import { URL } from "../constants";
 
 function SelectedCar() {
