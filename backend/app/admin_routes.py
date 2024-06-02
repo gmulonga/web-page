@@ -104,8 +104,7 @@ def send_email(email_receiver, email_subject, email_body):
                 server.login(email_sender, email_password)
                 server.sendmail(email_sender, email_receiver, em.as_string())
             return jsonify({"Email sent"})
-        else:
-            logger.error("No email configuration found.")
+        logger.error("No email configuration found.")
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
