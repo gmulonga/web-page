@@ -22,7 +22,7 @@ def create_app() -> Flask:
 
     # Register blueprints
     from . import cars_routes, requests_routes, admin_routes
-    app.register_blueprint(admin_routes.main)
+    app.register_blueprint(admin_routes.admin_bp)
     app.register_blueprint(cars_routes.cars_bp)
     app.register_blueprint(requests_routes.request_bp)
 

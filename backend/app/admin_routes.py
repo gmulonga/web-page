@@ -13,7 +13,7 @@ from email.message import EmailMessage
 import logging
 
 
-main = Blueprint('main', __name__)
+admin_bp = Blueprint('main', __name__)
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -30,14 +30,14 @@ def check_auth():
     return jsonify({'isAuthenticated': True})
 
 
-@main.route('/admin')
+@admin_bp.route('/admin')
 def admin():
     if 'username' in session:
         return "Admin Page"
     return redirect(url_for('main.login'))
 
 
-@main.route('/login', methods=['POST'])
+@admin_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
         data = request.get_json()
@@ -106,7 +106,7 @@ def send_email(email_receiver, email_subject, email_body):
         logger.error("No email configuration found.")
 
 
-@main.route('/send-emails', methods=['POST'])
+@admin_bp.route('/send-emails', methods=['POST'])
 def send_emails():
     """sends email to the subscribed customers"""
     try:
@@ -139,7 +139,7 @@ def send_emails():
         ), 500
 
 
-@main.route('/partners', methods=['GET'])
+@admin_bp.route('/partners', methods=['GET'])
 def get_partners():
     """fetches all the parteners in the DB"""
     try:
@@ -151,7 +151,7 @@ def get_partners():
         return jsonify({"error": str(e)}), 400
 
 
-@main.route('/partner/new', methods=['POST'])
+@admin_bp.route('/partner/new', methods=['POST'])
 @jwt_required()
 def add_partner():
     """adding partners in the footer secion"""
@@ -182,7 +182,7 @@ def add_partner():
         return jsonify({'error': 'Invalid request'}), 400
 
 
-@main.route('/partner/delete/<int:partner_id>', methods=['DELETE'])
+@admin_bp.route('/partner/delete/<int:partner_id>', methods=['DELETE'])
 @jwt_required()
 def delete_partner(partner_id):
     """deletes a partner from the DB
@@ -210,7 +210,7 @@ def delete_partner(partner_id):
         ), 405
 
 
-@main.route('/social', methods=['GET'])
+@admin_bp.route('/social', methods=['GET'])
 def get_social():
     """gets all the social media accounts"""
     social = Social.query.all()
@@ -226,7 +226,7 @@ def get_social():
     return jsonify({"social": social_list})
 
 
-@main.route('/social/new', methods=['POST'])
+@admin_bp.route('/social/new', methods=['POST'])
 @jwt_required()
 def add_social():
     """creates a new social media accounts
@@ -246,7 +246,7 @@ def add_social():
     return jsonify({"message": "social added successfully!"}), 201
 
 
-@main.route('/social/delete', methods=['DELETE'])
+@admin_bp.route('/social/delete', methods=['DELETE'])
 @jwt_required()
 def delete_social():
     """deletes all social media account"""
@@ -260,7 +260,7 @@ def delete_social():
     return jsonify({"message": "No social records found"}), 404
 
 
-@main.route('/email/configurations/<int:id>', methods=['GET'])
+@admin_bp.route('/email/configurations/<int:id>', methods=['GET'])
 def get_email_configurations(id):
     """fetches the email config"""
     email_config = EmailConfgurations.query.get(id)
@@ -279,7 +279,7 @@ def get_email_configurations(id):
     ), 404
 
 
-@main.route('/email/configuration/new', methods=['POST'])
+@admin_bp.route('/email/configuration/new', methods=['POST'])
 @jwt_required()
 def add_email():
     """adding email configurations"""
@@ -299,7 +299,7 @@ def add_email():
         return jsonify({'error': str(e)}), 500
 
 
-@main.route('/email/configuration/update<int:id>', methods=['PUT'])
+@admin_bp.route('/email/configuration/update<int:id>', methods=['PUT'])
 @jwt_required()
 def update_email(id):
     """updating email config"""
@@ -328,7 +328,7 @@ def update_email(id):
         ), 404
 
 
-@main.route('/credentials/<int:id>', methods=['GET'])
+@admin_bp.route('/credentials/<int:id>', methods=['GET'])
 def get_credentials(id):
     """fetches the passwor and username"""
     credentials = LoginCredentials.query.get(id)
@@ -343,7 +343,7 @@ def get_credentials(id):
     return jsonify({'message': 'Credentials not found'}), 404
 
 
-@main.route('/credentials/new', methods=['POST'])
+@admin_bp.route('/credentials/new', methods=['POST'])
 @jwt_required()
 def add_credentials():
     """adding a password"""
@@ -371,7 +371,7 @@ def add_credentials():
         return jsonify({'error': str(e)}), 500
 
 
-@main.route('/credentials/update/<int:id>', methods=['PUT'])
+@admin_bp.route('/credentials/update/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_credentials(id):
     """updating a password"""
