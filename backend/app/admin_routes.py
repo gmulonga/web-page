@@ -266,7 +266,7 @@ def delete_social():
 @admin_bp.route('/email/configurations/<int:id>', methods=['GET'])
 def get_email_configurations(id):
     """fetches the email config"""
-    email_config = EmailConfgurations.query.get(id)
+    email_config = EmailConfigurations.query.get(id)
 
     if email_config:
         return jsonify(
@@ -287,7 +287,7 @@ def get_email_configurations(id):
 def add_email():
     """adding email configurations"""
     data = request.json
-    new_email = EmailConfgurations(email=data['email'], password=data['password'])
+    new_email = EmailConfigurations(email=data['email'], password=data['password'])
 
     try:
         db.session.add(new_email)
@@ -307,7 +307,7 @@ def add_email():
 def update_email(id):
     """updating email config"""
     data = request.json
-    email_to_update = EmailConfgurations.query.get(id)
+    email_to_update = EmailConfigurations.query.get(id)
 
     if email_to_update:
         email_to_update.email = data['email']

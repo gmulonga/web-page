@@ -8,7 +8,6 @@ def create_app():
     """Function to create and configure the Flask application."""
     app = Flask(__name__)
 
-    # Register blueprints for different routes
     app.register_blueprint(admin_bp, url_prefix='/admin_bp')
     app.register_blueprint(cars_bp, url_prefix='/cars')
     app.register_blueprint(request_bp, url_prefix='/request')

@@ -90,35 +90,33 @@ def get_cars():
 def add_car():
     """Adds a new car to the DB"""
     try:
-        if request.method == 'POST':
+        request.method == 'POST'
             
-            data = request.json
+        data = request.json
 
-            car_data = {
-                'name': data.get('name'),
-                'price': data.get('price'),
-                'year': data.get('year'),
-                'type': data.get('type'),
-                'description': data.get('description'),
-                'dimensions': data.get('dimensions'),
-                'technology': data.get('technology'),
-                'engine': data.get('engine'),
-                'is_exclusive': data.get('is_exclusive')
+        car_data = {
+            'name': data.get('name'),
+            'price': data.get('price'),
+            'year': data.get('year'),
+            'type': data.get('type'),
+            'description': data.get('description'),
+            'dimensions': data.get('dimensions'),
+            'technology': data.get('technology'),
+            'engine': data.get('engine'),
+            'is_exclusive': data.get('is_exclusive')
+        }
+
+        new_car = Cars(**car_data)
+        db.session.add(new_car)
+        db.session.commit()
+
+        return jsonify(
+            {
+                "status": "success",
+                "message": "Car added successfully"
             }
-
-            new_car = Cars(**car_data)
-            db.session.add(new_car)
-            db.session.commit()
-
-            return jsonify(
-                {
-                    "status": "success",
-                    "message": "Car added successfully"
-                }
-            ), 201
+        ), 201
         
-        else:
-            return jsonify({'error': 'Invalid request'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
