@@ -75,7 +75,7 @@ function AddCar() {
 
             const response = await axios.post(`${URL}/car/new`, carPayload);
             alert("Car and image addition successful");
-            console.log('Car and image addition successful:', response.data);
+            
         } catch (error) {
             alert("Car and image addition failed");
             console.error('Car and image addition failed:', error);

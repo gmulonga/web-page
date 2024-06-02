@@ -80,7 +80,7 @@ function Footer() {
         }
     };
 
-  console.log(socialList);
+  
 
 
   return (
@@ -116,10 +116,10 @@ function Footer() {
               <div class="col-lg-6">
                 <h3 className="title footer-text f-header">Contact Us</h3>
                 <div className="footer-desc">
-                  <p className="footer-text"> <a className="btn btn-outline-light btn-social mx-3" href=""><i className="fa-solid fa-phone"></i></a> {socialList.length > 0 && socialList[0].phone}</p>
-                  <p className="footer-text"> <a className="btn btn-outline-light btn-social mx-3" href=""><i className="fab fa-fw fa-instagram"></i></a>{socialList.length > 0 && socialList[0].instagram}</p>
-                  <p className="footer-text"><a className="btn btn-outline-light btn-social mx-3" href=""><i className="fa-solid fa-envelope"></i></a>{socialList.length > 0 && socialList[0].email}</p>
-                  <p className="footer-text"><a className="btn btn-outline-light btn-social mx-3" href=""><i className="fab fa-fw fa-twitter"></i></a> {socialList.length > 0 && socialList[0].twitter}</p>
+                  <p className="footer-text"> <a className="btn btn-outline-light btn-social mx-3" href=""><i className="fa-solid fa-phone" /></a> {socialList.length > 0 && socialList[0].phone}</p>
+                  <p className="footer-text"> <a className="btn btn-outline-light btn-social mx-3" href=""><i className="fab fa-fw fa-instagram" /></a>{socialList.length > 0 && socialList[0].instagram}</p>
+                  <p className="footer-text"><a className="btn btn-outline-light btn-social mx-3" href=""><i className="fa-solid fa-envelope" /></a>{socialList.length > 0 && socialList[0].email}</p>
+                  <p className="footer-text"><a className="btn btn-outline-light btn-social mx-3" href=""><i className="fab fa-fw fa-twitter" /></a> {socialList.length > 0 && socialList[0].twitter}</p>
                 </div>
               </div>
               <div class="col-lg-6">

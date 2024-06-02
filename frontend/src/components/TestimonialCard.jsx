@@ -5,7 +5,7 @@ function TestimonialCard(props) {
         <div className="testimonial">
             <div className="testimonial-content">
                 <div className="testimonial-icon">
-                    <i className="fa fa-quote-left"></i>
+                    <i className="fa fa-quote-left" />
                 </div>
                 <p className="description">
                     {props.description}

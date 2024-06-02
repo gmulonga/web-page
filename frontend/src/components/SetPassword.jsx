@@ -31,7 +31,7 @@ function SetPassword() {
             });
 
             if (response.ok) {
-                console.log('Password added successfully.');
+                
             } else {
                 console.error('Failed to add password.');
             }

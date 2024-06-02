@@ -44,7 +44,7 @@ function AddSocial() {
         try {
             const response = await axios.delete(`${URL}/delete_social`);
             if (response.status === 200) {
-                console.log('socials deleted');
+                
             } else {
                 console.error('Failed to delete socail');
             }
@@ -71,7 +71,7 @@ function AddSocial() {
             <input type='text' id='instagram' name='instagram' className="full-width" value={formData.instagram} onChange={handleInputChange} /><br />
 
             <button onClick={handleSubmit} className="add-button">Add Social</button>
-            <div className='space'></div>
+            <div className='space' />
             <button onClick={handleDeleteSocial} className="add-button">Remove Current Social</button>
         </div>
     );
