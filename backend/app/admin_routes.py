@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, create_access_token
 import bcrypt
 from .models import (
     LoginCredentials, SubscribedEmails,
-    EmailConfgurations, Patners, Social, db
+    EmailConfigurations, Partners, Social, db
 )
 
 from werkzeug.security import generate_password_hash
@@ -86,24 +86,27 @@ def send_email(email_receiver, email_subject, email_body):
         email_subject (str): the email sender
         email_body (str): message of the email
     """
-    email_configuration = EmailConfgurations.query.first()
-    if email_configuration:
-        email_sender = email_configuration.email
-        email_password = email_configuration.password
+    try:
+        email_configuration = EmailConfigurations.query.first()
+        if email_configuration:
+            email_sender = email_configuration.email
+            email_password = email_configuration.password
 
-        em = EmailMessage()
-        em["Subject"] = email_subject
-        em["From"] = email_sender
-        em["To"] = email_receiver
-        em.set_content(email_body)
+            em = EmailMessage()
+            em["Subject"] = email_subject
+            em["From"] = email_sender
+            em["To"] = email_receiver
+            em.set_content(email_body)
 
-        context = ssl.create_default_context()
+            context = ssl.create_default_context()
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, em.as_string())
-    else:
-        logger.error("No email configuration found.")
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+                server.login(email_sender, email_password)
+                server.sendmail(email_sender, email_receiver, em.as_string())
+        else:
+            logger.error("No email configuration found.")
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @admin_bp.route('/send-emails', methods=['POST'])
@@ -143,7 +146,7 @@ def send_emails():
 def get_partners():
     """fetches all the parteners in the DB"""
     try:
-        partners = Patners.query.all()
+        partners = Partners.query.all()
         partners_data = [{"id": partner.id, "name": partner.name,
                           "image": partner.image} for partner in partners]
         return jsonify(partners_data), 200
@@ -164,7 +167,7 @@ def add_partner():
                 'image': data.get('image_base64')
             }
 
-            new_partner = Patners(**partner_data)
+            new_partner = Partners(**partner_data)
             db.session.add(new_partner)
             db.session.commit()
 
@@ -193,7 +196,7 @@ def delete_partner(partner_id):
     """
     if request.method == 'DELETE':
         try:
-            partner = Patners.query.get(partner_id)
+            partner = Partners.query.get(partner_id)
             if partner:
                 db.session.delete(partner)
                 db.session.commit()

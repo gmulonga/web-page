@@ -42,6 +42,7 @@ def get_customer_requests():
         ]
         return jsonify(requests_data)
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 
@@ -72,6 +73,7 @@ def add_request():
             }
         ), 201
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 
@@ -91,7 +93,7 @@ def delete_customer_request(id):
         if customer_request:
             db.session.delete(customer_request)
             db.session.commit()
-            return 'deleted', 204
+            return '', 204
         return jsonify(
             {
                 "status": "error",
@@ -110,16 +112,20 @@ def get_testimonials():
     Returns:
         jsonofy: JSON reponse to all testimonies
     """
-    testimonials = Testimonies.query.all()
-    testimonials_data = [
-        {
-            'id': testimonial.id,
-            'name': testimonial.name,
-            'testimony': testimonial.testimony
-        }
-        for testimonial in testimonials
-    ]
-    return jsonify(testimonials_data)
+    try:
+        testimonials = Testimonies.query.all()
+        testimonials_data = [
+            {
+                'id': testimonial.id,
+                'name': testimonial.name,
+                'testimony': testimonial.testimony
+            }
+            for testimonial in testimonials
+        ]
+        return jsonify(testimonials_data)
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/testimony/new', methods=['POST'])
@@ -130,14 +136,18 @@ def add_testimonial():
     Returns:
         jsonify: returns a response 201
     """
-    data = request.json
-    testimonial = Testimonies(
-        name=data['name'],
-        testimony=data['testimony']
-    )
-    db.session.add(testimonial)
-    db.session.commit()
-    return 'Testimony created', 201
+    try:
+        data = request.json
+        testimonial = Testimonies(
+            name=data['name'],
+            testimony=data['testimony']
+        )
+        db.session.add(testimonial)
+        db.session.commit()
+        return 'Testimony created', 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/testimony/update/<int:id>', methods=['PUT'])
@@ -198,41 +208,47 @@ def get_spare_parts():
     Returns:
         jsonify: returns a json response to all the spare parts
     """
-    spare_parts = SpareParts.query.all()
-    spare_parts_list = []
-    for part in spare_parts:
-        spare_parts_list.append({
-            'id': part.id,
-            'make': part.make,
-            'year': part.year,
-            'chassis_no': part.chassis_no,
-            'part_no': part.part_no
-        })
-    return jsonify(
-        {
-            "spare_parts": spare_parts_list
-        }
-    )
+    try:
+        spare_parts = SpareParts.query.all()
+        spare_parts_list = []
+        for part in spare_parts:
+            spare_parts_list.append({
+                'id': part.id,
+                'make': part.make,
+                'year': part.year,
+                'chassis_no': part.chassis_no,
+                'part_no': part.part_no
+            })
+        return jsonify(
+            {
+                "spare_parts": spare_parts_list
+            }
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/spare_part/new', methods=['POST'])
 @jwt_required()
 def add_spare_part():
     """adding a spare part"""
-    data = request.get_json()
-    new_spare_part = SpareParts(
-        make=data['make'],
-        year=data['year'],
-        chassis_no=data['chassis_no'],
-        part_no=data['part_no']
-    )
-    db.session.add(new_spare_part)
-    db.session.commit()
-    return jsonify(
-        {
-            "message": "Spare part added successfully!"
-        }
-    ), 201
+    try:
+        data = request.get_json()
+        new_spare_part = SpareParts(
+            make=data['make'],
+            year=data['year'],
+            chassis_no=data['chassis_no'],
+            part_no=data['part_no']
+        )
+        db.session.add(new_spare_part)
+        db.session.commit()
+        return jsonify(
+            {
+                "message": "Spare part added successfully!"
+            }
+        ), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/spare_part/<int:spare_id>', methods=['GET'])
@@ -277,25 +293,28 @@ def get_spare_parts_by_make_and_year(make, year):
     Returns:
         jsonify: returns a json response for spare parts of a particular year and make
     """
-    spare_parts = SpareParts.query.filter_by(make=make, year=year).all()
-    if not spare_parts:
-        return jsonify(
-            {
-                "message": "No spare parts found"
-            }
-        ), 404
+    try:
+        spare_parts = SpareParts.query.filter_by(make=make, year=year).all()
+        if not spare_parts:
+            return jsonify(
+                {
+                    "message": "No spare parts found"
+                }
+            ), 404
 
-    spare_parts_list = []
-    for part in spare_parts:
-        spare_parts_list.append({
-            'id': part.id,
-            'make': part.make,
-            'year': part.year,
-            'chassis_no': part.chassis_no,
-            'part_no': part.part_no
-        })
+        spare_parts_list = []
+        for part in spare_parts:
+            spare_parts_list.append({
+                'id': part.id,
+                'make': part.make,
+                'year': part.year,
+                'chassis_no': part.chassis_no,
+                'part_no': part.part_no
+            })
 
-    return jsonify({"spare_parts": spare_parts_list})
+        return jsonify({"spare_parts": spare_parts_list})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/spare_part/delete/<int:id>', methods=['DELETE'])
@@ -307,12 +326,15 @@ def delete_spare_part(id):
         id (int): the id of the spare part
 
     """
-    spare_part = SpareParts.query.get(id)
-    if spare_part:
-        db.session.delete(spare_part)
-        db.session.commit()
-        return '', 204
-    return jsonify({"message": "Spare part not found"}), 404
+    try:
+        spare_part = SpareParts.query.get(id)
+        if spare_part:
+            db.session.delete(spare_part)
+            db.session.commit()
+            return '', 204
+        return jsonify({"message": "Spare part not found"}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/spare_requests', methods=['GET'])
@@ -340,27 +362,30 @@ def get_all_requests():
 @request_bp.route('/spare_request/new', methods=['POST'])
 def add_spare_request():
     """ads a spare part request"""
-    if request.method == 'POST':
-        data = request.json
-        if not data:
+    try:
+        if request.method == 'POST':
+            data = request.json
+            if not data:
+                return jsonify({
+                    "status": "error",
+                    "message": "Invalid input"
+                }), 400
+
+            new_request = SpareRequests(
+                name=data['name'],
+                email=data['email'],
+                phone=data['phone'],
+                spare_id=data['spare_id']
+            )
+
+            db.session.add(new_request)
+            db.session.commit()
+
             return jsonify({
-                "status": "error",
-                "message": "Invalid input"
-            }), 400
-
-        new_request = SpareRequests(
-            name=data['name'],
-            email=data['email'],
-            phone=data['phone'],
-            spare_id=data['spare_id']
-        )
-
-        db.session.add(new_request)
-        db.session.commit()
-
-        return jsonify({
-            'message': 'Spare request added successfully'
-        }), 201
+                'message': 'Spare request added successfully'
+            }), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @request_bp.route('/spare_request/delete/<int:request_id>', methods=['DELETE'])
@@ -391,18 +416,22 @@ def delete_spare_request(request_id):
         db.session.close()
 
 
-@request_bp.route('/subscribe', methods=['POST'])
-def subscribe():
-    """allows a user to subscribe to emails"""
-    data = request.json
-    email = data['email']
+@request_bp.route('/subscribe', methods=['POST']) 
+def subscribe(): 
+    """Allows a user to subscribe to emails""" 
 
-    if email:
-        if not SubscribedEmails.query.filter_by(email=email).first():
-            subscribed_email = SubscribedEmails(email=email)
-            db.session.add(subscribed_email)
-            db.session.commit()
+    try:
+        data = request.json
+        email = data['email']
 
-            return 'You have been successfully subscribed.', 201
-        return 'You are already subscribed.', 200
-    return 'Invalid email address.', 400
+        if email:
+            if not SubscribedEmails.query.filter_by(email=email).first():
+                subscribed_email = SubscribedEmails(email=email)
+                db.session.add(subscribed_email)
+                db.session.commit()
+
+                return 'You have been successfully subscribed.', 201
+            return 'You are already subscribed.', 200
+        return 'Invalid email address.', 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

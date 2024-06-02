@@ -9,7 +9,7 @@ class Cars(db.Model):
         name (str): The name of the car.
         price (str): The price of the car.
         year (str): The year of manufacture of the car.
-        type (str): The type of the car.
+        car_type (str): The car_type of the car.
         description (str): The description of the car.
         dimensions (str): The dimensions of the car.
         technology (str): The technology features of the car.
@@ -22,7 +22,7 @@ class Cars(db.Model):
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.String(255), nullable=False)
     year = db.Column(db.String(255), nullable=False)
-    type = db.Column(db.String(255), nullable=False)
+    car_type = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String, nullable=False)
     dimensions = db.Column(db.String, nullable=False)
     technology = db.Column(db.String, nullable=False)
@@ -59,8 +59,8 @@ class Testimonies(db.Model):
     name = db.Column(db.String(255), nullable=False)
 
 
-class Patners(db.Model):
-    """Patners class representing the patners table in the database.
+class Partners(db.Model):
+    """Partners class representing the Partners table in the database.
 
     Attributes:
         id (int): The unique identifier of the partner.
@@ -169,7 +169,7 @@ class AboutUs(db.Model):
     about = db.Column(db.String(120), nullable=False)
 
 
-class EmailConfgurations(db.Model):
+class EmailConfigurations(db.Model):
     """Represents email configurations in the database.
 
     Attributes:

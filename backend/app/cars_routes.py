@@ -15,36 +15,39 @@ def home():
     Returns:
         json: returns a json data for the cars and testimonies
     """
-    cars = Cars.query.all()
-    testimonials = Testimonies.query.all()
+    try:
+        cars = Cars.query.all()
+        testimonials = Testimonies.query.all()
 
-    car_list = []
-    for car in cars:
-        car_dict = {
-            'id': car.id,
-            'name': car.name,
-            'price': car.price,
-            'type': car.type,
-            'year': car.year,
-            'description': car.description,
+        car_list = []
+        for car in cars:
+            car_dict = {
+                'id': car.id,
+                'name': car.name,
+                'price': car.price,
+                'type': car.type,
+                'year': car.year,
+                'description': car.description,
+            }
+            car_list.append(car_dict)
+
+        testimony_list = []
+        for testimony in testimonials:
+            testimony_dict = {
+                'id': testimony.id,
+                'name': testimony.name,
+                'testimony': testimony.testimony,
+            }
+            testimony_list.append(testimony_dict)
+
+        data = {
+            'cars': car_list,
+            'testimonials': testimony_list,
         }
-        car_list.append(car_dict)
 
-    testimony_list = []
-    for testimony in testimonials:
-        testimony_dict = {
-            'id': testimony.id,
-            'name': testimony.name,
-            'testimony': testimony.testimony,
-        }
-        testimony_list.append(testimony_dict)
-
-    data = {
-        'cars': car_list,
-        'testimonials': testimony_list,
-    }
-
-    return jsonify(data)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @cars_bp.route('/cars', methods=['GET'])
@@ -54,37 +57,41 @@ def get_cars():
     Returns:
         jsonify: A JSON response containing information about all cars
     """
-    cars = Cars.query.all()
-    cars_list = []
-    for car in cars:
-        car_dict = {
-            'id': car.id,
-            'name': car.name,
-            'price': car.price,
-            'year': car.year,
-            'type': car.type,
-            'description': car.description,
-            'dimensions': car.dimensions,
-            'technology': car.technology,
-            'engine': car.engine,
-            'is_exclusive': car.is_exclusive,
-            'images': []
-        }
-        for image in car.images:
-            car_dict['images'].append({
-                'id': image.id,
-                'image_base64': image.image_base64
-            })
-        cars_list.append(car_dict)
-    return jsonify(cars_list)
+    try:
+        cars = Cars.query.all()
+        cars_list = []
+        for car in cars:
+            car_dict = {
+                'id': car.id,
+                'name': car.name,
+                'price': car.price,
+                'year': car.year,
+                'type': car.type,
+                'description': car.description,
+                'dimensions': car.dimensions,
+                'technology': car.technology,
+                'engine': car.engine,
+                'is_exclusive': car.is_exclusive,
+                'images': []
+            }
+            for image in car.images:
+                car_dict['images'].append({
+                    'id': image.id,
+                    'image_base64': image.image_base64
+                })
+            cars_list.append(car_dict)
+        return jsonify(cars_list)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @cars_bp.route('/car/new', methods=['POST'])
 @jwt_required()
 def add_car():
     """Adds a new car to the DB"""
-    if request.method == 'POST':
-        try:
+    try:
+        if request.method == 'POST':
+            
             data = request.json
 
             car_data = {
@@ -108,13 +115,12 @@ def add_car():
                     "status": "success",
                     "message": "Car added successfully"
                 }
-            )
-
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({'error': str(e)}), 500
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
+            ), 201
+        
+        else:
+            return jsonify({'error': 'Invalid request'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @cars_bp.route('/car/<int:id>', methods=['GET'])
