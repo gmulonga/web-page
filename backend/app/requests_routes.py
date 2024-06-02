@@ -420,6 +420,9 @@ def delete_spare_request(request_id):
 def subscribe():
     """Allows a user to subscribe to emails"""
 
+@request_bp.route('/subscribe', methods=['POST'])
+def subscribe():
+    """Allows a user to subscribe to emails"""
     try:
         data = request.json
         email = data['email']
