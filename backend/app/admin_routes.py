@@ -76,7 +76,7 @@ def login():
             "status": "error",
             "message": "Invalid credentials"
         }), 401
-    
+
 
 @main.route('/logout')
 def logout():
@@ -183,7 +183,7 @@ def add_partner():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-  
+
 
 @main.route('/partner/delete/<int:partner_id>', methods=['DELETE'])
 @jwt_required()
@@ -244,7 +244,7 @@ def add_social():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-    
+
 
 @main.route('/social/delete', methods=['DELETE'])
 @jwt_required()
