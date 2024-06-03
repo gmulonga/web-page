@@ -53,7 +53,7 @@ def login():
         username = data.get('username')
         password = data.get('password')
 
-        if db.session.query(LoginCredentials).count() == 0:
+        if db.session.query(LoginCredentials).first() == 0:
             if USERS.get(username) == password:
                 access_token = create_access_token(identity=username)
                 return jsonify({"status": "success", "access_token": access_token})
@@ -73,8 +73,16 @@ def login():
             "status": "error",
             "message": "Invalid credentials"
         }), 401
+    except KeyError:
+        return jsonify({
+            "status": "error",
+            "message": "Missing username or password"
+        }), 400
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 
 @admin_bp.route('/logout')
@@ -356,10 +364,7 @@ def add_credentials():
     """adding a password"""
     try:
         data = request.json
-        hashed_password = bcrypt.hashpw(
-            data['password'].encode('utf-8'),
-            bcrypt.gensalt()
-        )
+        hashed_password = generate_password_hash(data['password'])
 
         new_credentials = LoginCredentials(
             username=data['username'],
