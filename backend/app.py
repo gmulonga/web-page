@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from app.cars_routes import cars_bp
 from app.requests_routes import request_bp
-from app.admin_routes import main
+from app.admin_routes import admin_bp
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 
@@ -14,7 +14,7 @@ def create_app():
     csrf = CSRFProtect()
     csrf.init_app(app)
 
-    app.register_blueprint(main, url_prefix='/main')
+    app.register_blueprint(admin_bp, url_prefix='/main')
     app.register_blueprint(cars_bp, url_prefix='/cars')
     app.register_blueprint(request_bp, url_prefix='/request')
 

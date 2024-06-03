@@ -1,20 +1,20 @@
+import logging
+import smtplib
+import ssl
+from email.message import EmailMessage
+
 from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required, create_access_token
-from flask_wtf.csrf import validate_csrf, CSRFError
+
 import bcrypt
 from .models import (
     LoginCredentials, SubscribedEmails,
     EmailConfgurations, Patners, Social, db
 )
-
 from werkzeug.security import generate_password_hash
-import smtplib
-import ssl
-from email.message import EmailMessage
-import logging
 
 
-main = Blueprint('main', __name__)
+admin_bp = Blueprint('main', __name__)
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -25,13 +25,13 @@ logger = logging.getLogger(__name__)
 USERS = {'admin': '1234'}
 
 
-@main.route('/check-auth', methods=['GET'])
+@admin_bp.route('/check-auth', methods=['GET'])
 @jwt_required()
 def check_auth():
     return jsonify({'isAuthenticated': True})
 
 
-@main.route('/admin')
+@admin_bp.route('/admin')
 def admin():
     """checking if the user is admin"""
     if 'username' in session:
@@ -39,61 +39,52 @@ def admin():
     return redirect(url_for('main.login'))
 
 
-@main.route('/login', methods=['POST'])
+@admin_bp.route('/login', methods=['POST'])
 def login():
     """logging in a user"""
     try:
-        csrf_token = request.headers.get('X-CSRFToken')
-        validate_csrf(csrf_token)
-    except CSRFError:
-        return jsonify({"message": "CSRF token missing"}), 400
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Invalid input"
+            }), 400
+        
+        username = data.get('username')
+        password = data.get('password')
 
-    data = request.get_json()
-    if not data:
-        return jsonify({
-            "status": "error",
-            "message": "Invalid input"
-        }), 400
+        if db.session.query(LoginCredentials).count() == 0:
+            if USERS.get(username) == password:
+                access_token = create_access_token(identity=username)
+                return jsonify({"status": "success", "access_token": access_token})
+            return jsonify({
+                "status": "error",
+                "message": "Invalid credentials"
+            }), 401
 
-    username = data.get('username')
-    password = data.get('password')
-
-    if not username or not password:
-        return jsonify({
-            "status": "error",
-            "message": "Missing username or password"
-        }), 400
-
-    if db.session.query(LoginCredentials).count() == 0:
-        if USERS.get(username) == password:
+        user = LoginCredentials.query.filter_by(username=username).first()
+        if user and bcrypt.checkpw(
+            password.encode('utf-8'),
+            user.password.encode('utf-8')
+        ):
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
         return jsonify({
             "status": "error",
             "message": "Invalid credentials"
         }), 401
-
-    user = LoginCredentials.query.filter_by(username=username).first()
-    if user and bcrypt.checkpw(
-        password.encode('utf-8'),
-        user.password.encode('utf-8')
-    ):
-        access_token = create_access_token(identity=username)
-        return jsonify({"status": "success", "access_token": access_token})
-    return jsonify({
-        "status": "error",
-        "message": "Invalid credentials"
-    }), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
-@main.route('/logout')
+@admin_bp.route('/logout')
 def logout():
     """logging out a user"""
     session.pop('username', None)
     return redirect(url_for('home'))
 
 
-@main.route('/partners', methods=['GET'])
+@admin_bp.route('/partners', methods=['GET'])
 def get_partners():
     """fetches all the parteners in the DB"""
     try:
@@ -105,7 +96,7 @@ def get_partners():
         return jsonify({"error": str(e)}), 400
 
 
-@main.route('/partner/new', methods=['POST'])
+@admin_bp.route('/partner/new', methods=['POST'])
 @jwt_required()
 def add_partner():
     """adding partners in the footer secion"""
@@ -133,7 +124,7 @@ def add_partner():
         return jsonify({'error': str(e)}), 500
 
 
-@main.route('/partner/delete/<int:partner_id>', methods=['DELETE'])
+@admin_bp.route('/partner/delete/<int:partner_id>', methods=['DELETE'])
 @jwt_required()
 def delete_partner(partner_id):
     """deletes a partner from the DB
@@ -154,7 +145,7 @@ def delete_partner(partner_id):
         return jsonify({"error": str(e)}), 400
 
 
-@main.route('/social', methods=['GET'])
+@admin_bp.route('/social', methods=['GET'])
 def get_social():
     """gets all the social media accounts"""
     social = Social.query.all()
@@ -170,7 +161,7 @@ def get_social():
     return jsonify({"social": social_list})
 
 
-@main.route('/social/new', methods=['POST'])
+@admin_bp.route('/social/new', methods=['POST'])
 @jwt_required()
 def add_social():
     """creates a new social media accounts
@@ -194,7 +185,7 @@ def add_social():
         return jsonify({"error": str(e)}), 500
 
 
-@main.route('/social/delete', methods=['DELETE'])
+@admin_bp.route('/social/delete', methods=['DELETE'])
 @jwt_required()
 def delete_social():
     """deletes all social media account"""
@@ -211,7 +202,7 @@ def delete_social():
         return jsonify({"error": str(e)}), 500
 
 
-@main.route('/email/configurations/<int:id>', methods=['GET'])
+@admin_bp.route('/email/configurations/<int:id>', methods=['GET'])
 def get_email_configurations(id):
     """fetches the email config"""
     email_config = EmailConfgurations.query.get(id)
@@ -230,14 +221,14 @@ def get_email_configurations(id):
     ), 404
 
 
-@main.route('/email/configuration/new', methods=['POST'])
+@admin_bp.route('/email/configuration/new', methods=['POST'])
 @jwt_required()
 def add_email():
     """adding email configurations"""
-    data = request.json
-    new_email = EmailConfgurations(email=data['email'], password=data['password'])
-
     try:
+        data = request.json
+        new_email = EmailConfgurations(email=data['email'], password=data['password'])
+
         db.session.add(new_email)
         db.session.commit()
         return jsonify(
@@ -250,33 +241,34 @@ def add_email():
         return jsonify({'error': str(e)}), 500
 
 
-@main.route('/email/configuration/update<int:id>', methods=['PUT'])
+@admin_bp.route('/email/configuration/update<int:id>', methods=['PUT'])
 @jwt_required()
 def update_email(id):
     """updating email config"""
-    data = request.json
-    email_to_update = EmailConfgurations.query.get(id)
+    try:
+        data = request.json
+        email_to_update = EmailConfgurations.query.get(id)
 
-    if email_to_update:
-        email_to_update.email = data['email']
-        email_to_update.password = data['password']
-
-        try:
+        if email_to_update:
+            email_to_update.email = data['email']
+            email_to_update.password = data['password']
+            
             db.session.commit()
             return jsonify(
                 {
-                    "message": "Email configuration updated successfully"
+                    "message": "Email configuration updated"
                 }
             )
-        except Exception as e:
+            
+        else:
+            return jsonify(
+                {
+                    "message": "Not found"
+                }
+            ), 404
+    except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
-    else:
-        return jsonify(
-            {
-                "message": "Email configuration not found"
-            }
-        ), 404
 
 
 def send_email(email_receiver, email_subject, email_body):
@@ -287,27 +279,30 @@ def send_email(email_receiver, email_subject, email_body):
         email_subject (str): the email sender
         email_body (str): message of the email
     """
-    email_configuration = EmailConfgurations.query.first()
-    if email_configuration:
-        email_sender = email_configuration.email
-        email_password = email_configuration.password
+    try:
+        email_configuration = EmailConfgurations.query.first()
+        if email_configuration:
+            email_sender = email_configuration.email
+            email_password = email_configuration.password
 
-        em = EmailMessage()
-        em["Subject"] = email_subject
-        em["From"] = email_sender
-        em["To"] = email_receiver
-        em.set_content(email_body)
+            em = EmailMessage()
+            em["Subject"] = email_subject
+            em["From"] = email_sender
+            em["To"] = email_receiver
+            em.set_content(email_body)
 
-        context = ssl.create_default_context()
+            context = ssl.create_default_context()
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, em.as_string())
-    else:
-        logger.error("No email configuration found.")
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+                server.login(email_sender, email_password)
+                server.sendmail(email_sender, email_receiver, em.as_string())
+        else:
+            logger.error("No email configuration found.")
+    except Exception as e:
+        logger.error(f"Error sending email: {str(e)}")
 
 
-@main.route('/email', methods=['POST'])
+@admin_bp.route('/email', methods=['POST'])
 def send_email_to_customer():
     """sends email to the subscribed customers"""
     try:
@@ -340,7 +335,7 @@ def send_email_to_customer():
         ), 500
 
 
-@main.route('/credentials/<int:id>', methods=['GET'])
+@admin_bp.route('/credentials/<int:id>', methods=['GET'])
 def get_credentials(id):
     """fetches the passwor and username"""
     credentials = LoginCredentials.query.get(id)
@@ -355,27 +350,27 @@ def get_credentials(id):
     return jsonify({'message': 'Credentials not found'}), 404
 
 
-@main.route('/credentials/new', methods=['POST'])
+@admin_bp.route('/credentials/new', methods=['POST'])
 @jwt_required()
 def add_credentials():
     """adding a password"""
-    data = request.json
-    hashed_password = bcrypt.hashpw(
-        data['password'].encode('utf-8'),
-        bcrypt.gensalt()
-    )
-
-    new_credentials = LoginCredentials(
-        username=data['username'],
-        password=hashed_password.decode('utf-8')
-    )
-
     try:
+        data = request.json
+        hashed_password = bcrypt.hashpw(
+            data['password'].encode('utf-8'),
+            bcrypt.gensalt()
+        )
+
+        new_credentials = LoginCredentials(
+            username=data['username'],
+            password=hashed_password.decode('utf-8')
+        )
+    
         db.session.add(new_credentials)
         db.session.commit()
         return jsonify(
             {
-                "message": "Login credentials added successfully"
+                "message": "Credentials added successfully"
             }
         ), 201
     except Exception as e:
@@ -383,33 +378,33 @@ def add_credentials():
         return jsonify({'error': str(e)}), 500
 
 
-@main.route('/credentials/update/<int:id>', methods=['PUT'])
+@admin_bp.route('/credentials/update/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_credentials(id):
     """updating a password"""
-    data = request.json
-    credentials_to_update = LoginCredentials.query.get(id)
+    try:
+        data = request.json
+        credentials_to_update = LoginCredentials.query.get(id)
 
-    if credentials_to_update:
-        credentials_to_update.username = data['username']
-        new_password = data['password']
-        hashed_password = generate_password_hash(new_password)
+        if credentials_to_update:
+            credentials_to_update.username = data['username']
+            new_password = data['password']
+            hashed_password = generate_password_hash(new_password)
 
-        credentials_to_update.password = hashed_password
+            credentials_to_update.password = hashed_password
 
-        try:
             db.session.commit()
             return jsonify(
                 {
-                    "message": "Login credentials updated successfully"
+                    "message": "Credentials updated successfully"
                 }
             )
-        except Exception as e:
+        else:
+            return jsonify(
+                {
+                    "message": "Not found"
+                }
+            ), 404
+    except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
-    else:
-        return jsonify(
-            {
-                "message": "Login credentials not found"
-            }
-        ), 404
