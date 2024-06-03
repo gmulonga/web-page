@@ -5,8 +5,6 @@ from email.message import EmailMessage
 
 from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required, create_access_token
-
-import bcrypt
 from .models import (
     LoginCredentials, SubscribedEmails,
     EmailConfgurations, Patners, Social, db
@@ -49,7 +47,7 @@ def login():
                 "status": "error",
                 "message": "Invalid input"
             }), 400
-        
+
         username = data.get('username')
         password = data.get('password')
 
@@ -257,20 +255,19 @@ def update_email(id):
         if email_to_update:
             email_to_update.email = data['email']
             email_to_update.password = data['password']
-            
+
             db.session.commit()
             return jsonify(
                 {
                     "message": "Email configuration updated"
                 }
             )
-            
-        else:
-            return jsonify(
-                {
-                    "message": "Not found"
-                }
-            ), 404
+
+        return jsonify(
+            {
+                "message": "Not found"
+            }
+        ), 404
     except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
@@ -367,7 +364,7 @@ def add_credentials():
             username=data['username'],
             password=hashed_password.decode('utf-8')
         )
-    
+
         db.session.add(new_credentials)
         db.session.commit()
         return jsonify(
@@ -401,12 +398,11 @@ def update_credentials(id):
                     "message": "Credentials updated successfully"
                 }
             )
-        else:
-            return jsonify(
-                {
-                    "message": "Not found"
-                }
-            ), 404
+        return jsonify(
+            {
+                "message": "Not found"
+            }
+        ), 404
     except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
