@@ -31,7 +31,7 @@ def create_app():
         app.register_blueprint(requests_routes.request_bp)
 
         db.create_all()
-    
+
     @app.route('/csrf-token', methods=['GET'])
     def get_csrf_token():
         token = generate_csrf()

@@ -47,7 +47,7 @@ def login():
         validate_csrf(csrf_token)
     except CSRFError:
         return jsonify({"status": "error", "message": "CSRF token missing or invalid"}), 400
-    
+
     data = request.get_json()
     if not data:
         return jsonify({
@@ -277,7 +277,7 @@ def update_email(id):
                 "message": "Email configuration not found"
             }
         ), 404
-    
+
 
 def send_email(email_receiver, email_subject, email_body):
     """sending email functionality
