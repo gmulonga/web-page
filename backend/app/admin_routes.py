@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required, create_access_token
+from flask_wtf.csrf import validate_csrf, CSRFError
 import bcrypt
 from .models import (
     LoginCredentials, SubscribedEmails,
@@ -41,43 +42,48 @@ def admin():
 @main.route('/login', methods=['POST'])
 def login():
     """logging in a user"""
-    if request.method == 'POST':
-        data = request.get_json()
-        if not data:
-            return jsonify({
-                "status": "error",
-                "message": "Invalid input"
-            }), 400
+    try:
+        csrf_token = request.headers.get('X-CSRFToken')
+        validate_csrf(csrf_token)
+    except CSRFError:
+        return jsonify({"status": "error", "message": "CSRF token missing or invalid"}), 400
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid input"
+        }), 400
 
-        username = data.get('username')
-        password = data.get('password')
+    username = data.get('username')
+    password = data.get('password')
 
-        if not username or not password:
-            return jsonify({
-                "status": "error",
-                "message": "Missing username or password"
-            }), 400
+    if not username or not password:
+        return jsonify({
+            "status": "error",
+            "message": "Missing username or password"
+        }), 400
 
-        if db.session.query(LoginCredentials).count() == 0:
-            if USERS.get(username) == password:
-                access_token = create_access_token(identity=username)
-                return jsonify({"status": "success", "access_token": access_token})
-            return jsonify({
-                "status": "error",
-                "message": "Invalid credentials"
-            }), 401
-
-        user = LoginCredentials.query.filter_by(username=username).first()
-        if user and bcrypt.checkpw(
-            password.encode('utf-8'),
-            user.password.encode('utf-8')
-        ):
+    if db.session.query(LoginCredentials).count() == 0:
+        if USERS.get(username) == password:
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
         return jsonify({
             "status": "error",
             "message": "Invalid credentials"
         }), 401
+
+    user = LoginCredentials.query.filter_by(username=username).first()
+    if user and bcrypt.checkpw(
+        password.encode('utf-8'),
+        user.password.encode('utf-8')
+    ):
+        access_token = create_access_token(identity=username)
+        return jsonify({"status": "success", "access_token": access_token})
+    return jsonify({
+        "status": "error",
+        "message": "Invalid credentials"
+    }), 401
 
 
 @main.route('/logout')
