@@ -32,6 +32,7 @@ def check_auth():
 
 @main.route('/admin')
 def admin():
+    """checking if the user is admin"""
     if 'username' in session:
         return "Admin Page"
     return redirect(url_for('main.login'))
@@ -39,6 +40,7 @@ def admin():
 
 @main.route('/login', methods=['POST'])
 def login():
+    """logging in a user"""
     if request.method == 'POST':
         data = request.get_json()
         if not data:
@@ -80,69 +82,9 @@ def login():
 
 @main.route('/logout')
 def logout():
+    """logging out a user"""
     session.pop('username', None)
     return redirect(url_for('home'))
-
-
-def send_email(email_receiver, email_subject, email_body):
-    """sending email functionality
-
-    Args:
-        email_receiver (str): the email recepient
-        email_subject (str): the email sender
-        email_body (str): message of the email
-    """
-    email_configuration = EmailConfgurations.query.first()
-    if email_configuration:
-        email_sender = email_configuration.email
-        email_password = email_configuration.password
-
-        em = EmailMessage()
-        em["Subject"] = email_subject
-        em["From"] = email_sender
-        em["To"] = email_receiver
-        em.set_content(email_body)
-
-        context = ssl.create_default_context()
-
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, em.as_string())
-    else:
-        logger.error("No email configuration found.")
-
-
-@main.route('/email', methods=['POST'])
-def send_email_to_customer():
-    """sends email to the subscribed customers"""
-    try:
-        subscribed_emails = SubscribedEmails.query.all()
-
-        emails = [email.email for email in subscribed_emails]
-
-        data = request.get_json()
-
-        email_subject = data['subject']
-        email_body = data['body']
-
-        for email_receiver in emails:
-            try:
-                send_email(email_receiver, email_subject, email_body)
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-
-        return jsonify(
-            {
-                "message": "Emails sent successfully."
-            }
-        ), 200
-
-    except Exception as e:
-        return jsonify(
-            {
-                "error": str(e)
-            }
-        ), 500
 
 
 @main.route('/partners', methods=['GET'])
@@ -329,6 +271,67 @@ def update_email(id):
                 "message": "Email configuration not found"
             }
         ), 404
+    
+
+def send_email(email_receiver, email_subject, email_body):
+    """sending email functionality
+
+    Args:
+        email_receiver (str): the email recepient
+        email_subject (str): the email sender
+        email_body (str): message of the email
+    """
+    email_configuration = EmailConfgurations.query.first()
+    if email_configuration:
+        email_sender = email_configuration.email
+        email_password = email_configuration.password
+
+        em = EmailMessage()
+        em["Subject"] = email_subject
+        em["From"] = email_sender
+        em["To"] = email_receiver
+        em.set_content(email_body)
+
+        context = ssl.create_default_context()
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+            server.login(email_sender, email_password)
+            server.sendmail(email_sender, email_receiver, em.as_string())
+    else:
+        logger.error("No email configuration found.")
+
+
+@main.route('/email', methods=['POST'])
+def send_email_to_customer():
+    """sends email to the subscribed customers"""
+    try:
+        subscribed_emails = SubscribedEmails.query.all()
+
+        emails = [email.email for email in subscribed_emails]
+
+        data = request.get_json()
+
+        email_subject = data['subject']
+        email_body = data['body']
+
+        for email_receiver in emails:
+            try:
+                send_email(email_receiver, email_subject, email_body)
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        return jsonify(
+            {
+                "message": "Emails sent successfully."
+            }
+        ), 200
+
+    except Exception as e:
+        return jsonify(
+            {
+                "error": str(e)
+            }
+        ), 500
 
 
 @main.route('/credentials/<int:id>', methods=['GET'])
