@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from app.cars_routes import cars_bp
 from app.requests_routes import request_bp
 from app.admin_routes import main
-from flask_wtf.csrf  import CSRFProtect, generate_csrf
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 
 def create_app():
@@ -20,6 +20,7 @@ def create_app():
 
     @app.route('/csrf-token', methods=['GET'])
     def get_csrf_token():
+        """gets the csrf token"""
         token = generate_csrf()
         return jsonify({'csrf_token': token})
 

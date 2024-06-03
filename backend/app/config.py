@@ -5,6 +5,5 @@ import secrets
 SECRET_KEY = secrets.token_bytes(24)
 JWT_SECRET_KEY = secrets.token_bytes(24)
 WTF_CSRF_SECRET_KEY = secrets.token_hex(16)
-print(WTF_CSRF_SECRET_KEY)
 SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 SQLALCHEMY_TRACK_MODIFICATIONS = False

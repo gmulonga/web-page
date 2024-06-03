@@ -46,7 +46,7 @@ def login():
         csrf_token = request.headers.get('X-CSRFToken')
         validate_csrf(csrf_token)
     except CSRFError:
-        return jsonify({"status": "error", "message": "CSRF token missing or invalid"}), 400
+        return jsonify({"message": "CSRF token missing"}), 400
 
     data = request.get_json()
     if not data:

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_wtf.csrf  import CSRFProtect, generate_csrf
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 
 db = SQLAlchemy()
@@ -34,6 +34,7 @@ def create_app():
 
     @app.route('/csrf-token', methods=['GET'])
     def get_csrf_token():
+        """gets the csrf token"""
         token = generate_csrf()
         return jsonify({'csrf_token': token})
 
