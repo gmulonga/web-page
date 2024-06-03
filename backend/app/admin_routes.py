@@ -76,6 +76,12 @@ def login():
             "status": "error",
             "message": "Invalid credentials"
         }), 401
+    
+
+@main.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
 
 
 def send_email(email_receiver, email_subject, email_body):
@@ -106,8 +112,8 @@ def send_email(email_receiver, email_subject, email_body):
         logger.error("No email configuration found.")
 
 
-@main.route('/send-emails', methods=['POST'])
-def send_emails():
+@main.route('/email', methods=['POST'])
+def send_email_to_customer():
     """sends email to the subscribed customers"""
     try:
         subscribed_emails = SubscribedEmails.query.all()
@@ -155,32 +161,29 @@ def get_partners():
 @jwt_required()
 def add_partner():
     """adding partners in the footer secion"""
-    if request.method == 'POST':
-        try:
-            data = request.json
+    try:
+        data = request.json
 
-            partner_data = {
-                'name': data.get('name'),
-                'image': data.get('image_base64')
+        partner_data = {
+            'name': data.get('name'),
+            'image': data.get('image_base64')
+        }
+
+        new_partner = Patners(**partner_data)
+        db.session.add(new_partner)
+        db.session.commit()
+
+        return jsonify(
+            {
+                "status": "success",
+                "message": "Partner added successfully"
             }
+        ), 201
 
-            new_partner = Patners(**partner_data)
-            db.session.add(new_partner)
-            db.session.commit()
-
-            return jsonify(
-                {
-                    "status": "success",
-                    "message": "Partner added successfully"
-                }
-            ), 201
-
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({'error': str(e)}), 500
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
-
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+  
 
 @main.route('/partner/delete/<int:partner_id>', methods=['DELETE'])
 @jwt_required()
@@ -191,23 +194,16 @@ def delete_partner(partner_id):
         partner_id (int): the ID of the partner
 
     """
-    if request.method == 'DELETE':
-        try:
-            partner = Patners.query.get(partner_id)
-            if partner:
-                db.session.delete(partner)
-                db.session.commit()
-                return '', 204
-            return jsonify({"message": "Partner not found!"}), 404
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({"error": str(e)}), 400
-    else:
-        return jsonify(
-            {
-                "error": "Invalid request method"
-            }
-        ), 405
+    try:
+        partner = Patners.query.get(partner_id)
+        if partner:
+            db.session.delete(partner)
+            db.session.commit()
+            return '', 204
+        return jsonify({"message": "Partner not found!"}), 404
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
 
 
 @main.route('/social', methods=['GET'])
@@ -234,30 +230,37 @@ def add_social():
     Returns:
         json: returns json data for the social media accounts
     """
-    data = request.get_json()
-    new_social = Social(
-        phone=data['phone'],
-        twitter=data['twitter'],
-        instagram=data['instagram'],
-        email=data['email']
-    )
-    db.session.add(new_social)
-    db.session.commit()
-    return jsonify({"message": "social added successfully!"}), 201
-
+    try:
+        data = request.get_json()
+        new_social = Social(
+            phone=data['phone'],
+            twitter=data['twitter'],
+            instagram=data['instagram'],
+            email=data['email']
+        )
+        db.session.add(new_social)
+        db.session.commit()
+        return jsonify({"message": "social added successfully!"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
 
 @main.route('/social/delete', methods=['DELETE'])
 @jwt_required()
 def delete_social():
     """deletes all social media account"""
-    social_records = Social.query.all()
+    try:
+        social_records = Social.query.all()
 
-    if social_records:
-        for social in social_records:
-            db.session.delete(social)
-        db.session.commit()
-        return '', 204
-    return jsonify({"message": "No social records found"}), 404
+        if social_records:
+            for social in social_records:
+                db.session.delete(social)
+            db.session.commit()
+            return '', 204
+        return jsonify({"message": "No social records found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @main.route('/email/configurations/<int:id>', methods=['GET'])
