@@ -281,7 +281,6 @@ def send_email(email_receiver, email_subject, email_body):
         email_subject (str): the email sender
         email_body (str): message of the email
     """
-    
     email_configuration = EmailConfgurations.query.first()
     if email_configuration:
         email_sender = email_configuration.email
