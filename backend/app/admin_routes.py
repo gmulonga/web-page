@@ -269,8 +269,8 @@ def update_email(id):
             }
         ), 404
     except Exception as e:
-            db.session.rollback()
-            return jsonify({'error': str(e)}), 500
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 
 def send_email(email_receiver, email_subject, email_body):
@@ -281,27 +281,25 @@ def send_email(email_receiver, email_subject, email_body):
         email_subject (str): the email sender
         email_body (str): message of the email
     """
-    try:
-        email_configuration = EmailConfgurations.query.first()
-        if email_configuration:
-            email_sender = email_configuration.email
-            email_password = email_configuration.password
+    
+    email_configuration = EmailConfgurations.query.first()
+    if email_configuration:
+        email_sender = email_configuration.email
+        email_password = email_configuration.password
 
-            em = EmailMessage()
-            em["Subject"] = email_subject
-            em["From"] = email_sender
-            em["To"] = email_receiver
-            em.set_content(email_body)
+        em = EmailMessage()
+        em["Subject"] = email_subject
+        em["From"] = email_sender
+        em["To"] = email_receiver
+        em.set_content(email_body)
 
-            context = ssl.create_default_context()
+        context = ssl.create_default_context()
 
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-                server.login(email_sender, email_password)
-                server.sendmail(email_sender, email_receiver, em.as_string())
-        else:
-            logger.error("No email configuration found.")
-    except Exception as e:
-        logger.error(f"Error sending email: {str(e)}")
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+            server.login(email_sender, email_password)
+            server.sendmail(email_sender, email_receiver, em.as_string())
+    else:
+        logger.error("No email configuration found.")
 
 
 @admin_bp.route('/email/', methods=['POST'])
@@ -404,5 +402,5 @@ def update_credentials(id):
             }
         ), 404
     except Exception as e:
-            db.session.rollback()
-            return jsonify({'error': str(e)}), 500
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
