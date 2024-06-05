@@ -24,10 +24,10 @@ function AdminPage() {
                     if (response.data.isAuthenticated) {
                         setIsAuthenticated(true);
                     } else {
-                        navigate('/login'); 
+                        navigate('/login');
                     }
                 } else {
-                    navigate('/login'); 
+                    navigate('/login');
                 }
             } catch (error) {
                 console.error("Authentication failed");

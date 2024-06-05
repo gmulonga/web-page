@@ -5,6 +5,9 @@ import { URL } from '../constants';
 
 
 function AddCar() {
+
+    const accessToken = localStorage.getItem('access_token');
+
     const [carData, setCarData] = useState({
         name: '',
         price: '',
@@ -75,14 +78,15 @@ function AddCar() {
                 is_exclusive: carData.is_exclusive,
                 images: carImages.image_url, // Include the image URLs in the payload
             };
+            const response = await axios.post(`${URL}/car/new`, carPayload, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`, // Include the access token in the request headers
+                },
+            });
 
-            // Send the car data payload to your backend API to create the car and associate images
-            const response = await axios.post(`${URL}/add-car`, carPayload);
             alert("Car and image addition successful");
-            console.log('Car and image addition successful:', response.data);
         } catch (error) {
             alert("Car and image addition failed");
-            console.error('Car and image addition failed:', error);
         }
     };
 
@@ -113,7 +117,7 @@ function AddCar() {
 
                 await new Promise((resolve) => {
                     reader.onload = (e) => {
-                        updatedImages.push(e.target.result); 
+                        updatedImages.push(e.target.result);
                         resolve();
                     };
 

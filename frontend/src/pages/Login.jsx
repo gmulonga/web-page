@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderPage from '../components/HeaderPage';
@@ -8,21 +8,30 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    // const [csrfToken, setCsrfToken] = useState('');
     const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     async function fetchCsrfToken() {
+    //         try {
+    //             const response = await axios.get(`${URL}/csrf-token`);
+    //             setCsrfToken(response.data.csrf_token);
+    //         } catch (error) {
+    //             console.error('Failed to fetch CSRF token:', error);
+    //         }
+    //     }
+
+    //     fetchCsrfToken();
+    // }, []);
 
     const handleLogin = async () => {
         try {
-            // Retrieve CSRF token from cookie
-            const csrfToken = getCookie('csrf_token');
-
-            // Send login request with CSRF token
             const response = await axios.post(
                 `${URL}/login`,
                 { username, password },
-                { headers: { 'X-CSRFToken': csrfToken } }
+                // { headers: { 'X-CSRFToken': csrfToken } }
             );
 
-            // Handle login response
             if (response.data.status === 'success') {
                 localStorage.setItem('access_token', response.data.access_token);
                 navigate('/admin');
@@ -33,12 +42,6 @@ const Login = () => {
             setErrorMessage('Wrong username or password!');
             console.error('Login failed:', error);
         }
-    };
-
-    // Function to retrieve CSRF token from cookie
-    const getCookie = (name) => {
-        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return cookieValue ? cookieValue.pop() : '';
     };
 
     return (

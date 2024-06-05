@@ -36,31 +36,41 @@ def admin():
 
 @admin_bp.route('/login', methods=['POST'])
 def login():
-    try:
-        csrf_token = request.headers.get('X-CSRFToken')
-        if not csrf_token or csrf_token != session.get('csrf_token'):
-            raise CSRFError("CSRF token is missing or invalid")
+    """logging in a user"""
 
-        data = request.get_json()
-        if not data:
-            return jsonify({"status": "error", "message": "Invalid input"}), 400
+    # try:
+    #     csrf_token = request.headers.get('X-CSRFToken')
+    #     validate_csrf(csrf_token)
+    # except CSRFError:
+    #     return jsonify({"message": "CSRF token missing"}), 400
 
-        username = data.get('username')
-        password = data.get('password')
+    data = request.get_json()
+    if not data:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid input"
+        }), 400
 
-        if db.session.query(LoginCredentials).count() == 0:
-            if USERS.get(username) == password:
-                access_token = create_access_token(identity=username)
-                return jsonify({"status": "success", "access_token": access_token})
-            return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+    username = data.get('username')
+    password = data.get('password')
 
-        user = LoginCredentials.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
+    if db.session.query(LoginCredentials).first() == 0:
+        if USERS.get(username) == password:
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
-        return jsonify({"status": "error", "message": "Invalid credentials"}), 401
-    except CSRFError as e:
-        return jsonify({"status": "error", "message": str(e)}), 400
+        return jsonify({
+            "status": "error",
+            "message": "Invalid credentials"
+        }), 401
+
+    user = LoginCredentials.query.filter_by(username=username).first()
+    if user and check_password_hash(user.password, password):
+        access_token = create_access_token(identity=username)
+        return jsonify({"status": "success", "access_token": access_token})
+    return jsonify({
+        "status": "error",
+        "message": "Invalid credentials"
+    }), 401
 
 
 @admin_bp.route('/logout/')
