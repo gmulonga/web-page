@@ -6,6 +6,7 @@ from .models import (
     LoginCredentials, Patners, Social, db
 )
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf.csrf import validate_csrf, CSRFError
 
 
 admin_bp = Blueprint('main', __name__)
@@ -35,45 +36,31 @@ def admin():
 
 @admin_bp.route('/login', methods=['POST'])
 def login():
-    """logging in a user"""
     try:
+        csrf_token = request.headers.get('X-CSRFToken')
+        if not csrf_token or csrf_token != session.get('csrf_token'):
+            raise CSRFError("CSRF token is missing or invalid")
+
         data = request.get_json()
         if not data:
-            return jsonify({
-                "status": "error",
-                "message": "Invalid input"
-            }), 400
+            return jsonify({"status": "error", "message": "Invalid input"}), 400
 
         username = data.get('username')
         password = data.get('password')
 
-        if db.session.query(LoginCredentials).first() == 0:
+        if db.session.query(LoginCredentials).count() == 0:
             if USERS.get(username) == password:
                 access_token = create_access_token(identity=username)
                 return jsonify({"status": "success", "access_token": access_token})
-            return jsonify({
-                "status": "error",
-                "message": "Invalid credentials"
-            }), 401
+            return jsonify({"status": "error", "message": "Invalid credentials"}), 401
 
         user = LoginCredentials.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
-        return jsonify({
-            "status": "error",
-            "message": "Invalid credentials"
-        }), 401
-    except KeyError:
-        return jsonify({
-            "status": "error",
-            "message": "Missing username or password"
-        }), 400
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        }), 500
+        return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+    except CSRFError as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
 
 
 @admin_bp.route('/logout/')
