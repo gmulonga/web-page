@@ -5,7 +5,6 @@ import TestimonialCard from "../components/TestimonialCard";
 import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
-import { API_BASE_URL } from "../constants";
 import CarsAPI from "../services/carsAPI";
 
 
@@ -18,56 +17,30 @@ function HomePage() {
 
 
     useEffect(() => {
-        const fetchExclusive = async () => {
+        const fetchData = async () => {
             try {
-                const { data } = await carsApi.getExclusiveCars();
-                setExclusiveOffers(data);
+                const { data: exclusiveData } = await carsApi.getExclusiveCars();
+                const { data: carsData } = await carsApi.getCars();
+                const { data: testimoniesData } = await carsApi.getTestimonies();
+                setExclusiveOffers(exclusiveData);
+                setCars(carsData);
+                setTestimony(testimoniesData);
             } catch (error) {
-                console.error("Error fetching testimonies", error);
+                console.error("Error fetching data", error);
             }
         };
-        fetchExclusive();
+        fetchData();
     }, []);
 
-    useEffect(() => {
-        const fetchCars = async () => {
-            try {
-                const { data } = await carsApi.getCars();
-                setCars(data);
-            } catch (error) {
-                console.error("Error fetching testimonies", error);
-            }
-        };
-        fetchCars();
-    }, []);
+    const mapCarsWithBase64Images = (carsList) => {
+        return carsList.map((carEntry) => ({
+            ...carEntry,
+            image: carEntry.images.length > 0 ? `${carEntry.images[0].image_base64}` : "",
+        }));
+    };
 
-    useEffect(() => {
-        const fetchTestimonies = async () => {
-            try {
-                const { data } = await carsApi.getTestimonies();
-                setTestimony(data);
-            } catch (error) {
-                console.error("Error fetching testimonies", error);
-            }
-        };
-        fetchTestimonies();
-    }, []);
-
-    const carsWithBase64Images = cars.map((carEntry) => ({
-        ...carEntry,
-        image:
-            carEntry.images.length > 0
-                ? `${carEntry.images[0].image_base64}`
-                : "",
-    }));
-
-    const exclusiveWithBase64Images = exclusiveOffers.map((carEntry) => ({
-        ...carEntry,
-        image:
-            carEntry.images.length > 0
-                ? `${carEntry.images[0].image_base64}`
-                : "",
-    }));
+    const carsWithBase64Images = mapCarsWithBase64Images(cars);
+    const exclusiveWithBase64Images = mapCarsWithBase64Images(exclusiveOffers);
 
 
     return <div>

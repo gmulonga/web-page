@@ -1,62 +1,42 @@
 import React, { useEffect, useState } from "react";
 import HeaderPage from "../components/HeaderPage";
 import CarCard from "../components/CarCard";
-import { URL } from "../constants";
+import CarsAPI from "../services/carsAPI";
+
 
 function EVspage() {
-
     const [cars, setCars] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [carType, setCarType] = useState(null);
+    const carsApi = new CarsAPI();
 
     useEffect(() => {
-        fetch(`${URL}evs`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => setCars(data))
-            .catch((error) => console.log(error));
+        const fetchCars = async () => {
+            const { data } = await carsApi.getEVs();
+            setCars(data);
+        };
+        fetchCars();
     }, []);
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const carName = event.target.elements.query.value;
         setSearchQuery(carName);
 
-        if (carName) {
-            try {
-                const response = await fetch(`${URL}/evs/${carName}`);
-                if (response.ok) {
-                    const carsData = await response.json();
-                    setCarType(carsData);
-
-                } else {
-                    console.error('Failed to fetch cars');
-                }
-            } catch (error) {
-                console.error('Error fetching cars', error);
-            }
-        }
+        const { data } = await carsApi.getEVsByName(carName);
+        setCarType(data);
     };
 
+    const carsWithBase64Images = cars.map((carEntry) => ({
+        ...carEntry,
+        image: carEntry.images.length > 0 ? `${carEntry.images[0].image_base64}` : "",
+    }));
+
     const filteredCars = searchQuery
-        ? cars.filter((carEntry) =>
+        ? carsWithBase64Images.filter((carEntry) =>
             carEntry.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
-        : cars;
-
-
-    const carsWithBase64Images = filteredCars.map((carEntry) => ({
-        ...carEntry,
-        image:
-            carEntry.images.length > 0
-                ? `${carEntry.images[0].image_base64}`
-                : "",
-    }));
+        : carsWithBase64Images;
 
     return (
         <div>
@@ -67,8 +47,6 @@ function EVspage() {
             />
             <div className="container">
                 <div>
-
-
                     <div className="align-items-center pl-md-5 aside-stretch-right">
                         <form className="search-form w-100" onSubmit={handleSubmit}>
                             <div className="search-group d-flex">
