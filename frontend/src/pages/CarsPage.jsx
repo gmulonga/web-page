@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from "react";
 import CarCard from "../components/CarCard";
 import HeaderPage from "../components/HeaderPage";
-import { URL } from "../constants"
+import CarsAPI from "../services/carsAPI";
+
 
 function CarsPage() {
   const [cars, setCars] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [carType, setCarType] = useState(null);
+  const carsApi = new CarsAPI();
+
 
   useEffect(() => {
-    fetch(`${URL}/cars`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setCars(data))
-      .catch((error) => console.error("Error fetching cars", error));
+    const fetchCars = async () => {
+      try {
+        const { data } = await carsApi.getCars();
+        setCars(data);
+      } catch (error) {
+        console.error("Error fetching cars", error);
+      }
+    };
+
+    fetchCars();
   }, []);
 
   const handleClick = (name) => {
@@ -31,13 +35,8 @@ function CarsPage() {
 
     if (carName) {
       try {
-        const response = await fetch(`${URL}/cars/${carName}`);
-        if (response.ok) {
-          const carsData = await response.json();
-          setCarType(carsData);
-        } else {
-          console.error("Failed to fetch cars");
-        }
+        const { data } = await carsApi.getCarsByName(carName);
+        setCarType(data);
       } catch (error) {
         console.error("Error fetching cars", error);
       }
@@ -55,7 +54,7 @@ function CarsPage() {
     image:
       carEntry.images.length > 0
         ? `${carEntry.images[0].image_base64}`
-        : "", 
+        : "",
   }));
 
 

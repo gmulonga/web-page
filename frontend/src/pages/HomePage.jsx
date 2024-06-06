@@ -5,47 +5,52 @@ import TestimonialCard from "../components/TestimonialCard";
 import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
-import { URL } from "../constants";
+import { API_BASE_URL } from "../constants";
+import CarsAPI from "../services/carsAPI";
+
 
 function HomePage() {
 
     const [testimony, setTestimony] = useState([]);
     const [cars, setCars] = useState([]);
     const [exclusiveOffers, setExclusiveOffers] = useState([]);
+    const carsApi = new CarsAPI();
+
 
     useEffect(() => {
-        // fetching cars
-        fetch(`${URL}/cars`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => setCars(data))
-            .catch((error) => console.log(error));
+        const fetchExclusive = async () => {
+            try {
+                const { data } = await carsApi.getExclusiveCars();
+                setExclusiveOffers(data);
+            } catch (error) {
+                console.error("Error fetching testimonies", error);
+            }
+        };
+        fetchExclusive();
+    }, []);
 
-        // fetch testimonies
-        fetch(`${URL}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => setTestimony(data.testimonials))
-            .catch((error) => console.log(error));
+    useEffect(() => {
+        const fetchCars = async () => {
+            try {
+                const { data } = await carsApi.getCars();
+                setCars(data);
+            } catch (error) {
+                console.error("Error fetching testimonies", error);
+            }
+        };
+        fetchCars();
+    }, []);
 
-        // Fetch exclusive offers
-        fetch(`${URL}/exclusive-cars`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => setExclusiveOffers(data))
-            .catch((error) => console.log(error));
+    useEffect(() => {
+        const fetchTestimonies = async () => {
+            try {
+                const { data } = await carsApi.getTestimonies();
+                setTestimony(data);
+            } catch (error) {
+                console.error("Error fetching testimonies", error);
+            }
+        };
+        fetchTestimonies();
     }, []);
 
     const carsWithBase64Images = cars.map((carEntry) => ({
@@ -59,10 +64,10 @@ function HomePage() {
     const exclusiveWithBase64Images = exclusiveOffers.map((carEntry) => ({
         ...carEntry,
         image:
-          carEntry.images.length > 0
-            ? `${carEntry.images[0].image_base64}`
-            : "",
-      }));
+            carEntry.images.length > 0
+                ? `${carEntry.images[0].image_base64}`
+                : "",
+    }));
 
 
     return <div>
