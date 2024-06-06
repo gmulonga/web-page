@@ -47,7 +47,7 @@ def home():
     return jsonify(data)
 
 
-@cars_bp.route('/cars', methods=['GET'])
+@cars_bp.route('/car', methods=['GET'])
 def get_cars():
     """Retrieve a list of all cars.
 
@@ -150,7 +150,7 @@ def get_car(id):
     return jsonify({"message": "Car not found"}), 404
 
 
-@cars_bp.route('/cars/<string:name>', methods=['GET'])
+@cars_bp.route('/car/<string:name>', methods=['GET'])
 def get_cars_by_name(name):
     """Returns a car by name
 
@@ -202,7 +202,7 @@ def get_car_images(car_id):
     return jsonify(image_data)
 
 
-@cars_bp.route('/cars/evs', methods=['GET'])
+@cars_bp.route('/car/evs', methods=['GET'])
 def get_evs():
     """returns all the evs
 
@@ -230,7 +230,7 @@ def get_evs():
     return jsonify(evs_list)
 
 
-@cars_bp.route('/cars/evs/<string:name>', methods=['GET'])
+@cars_bp.route('/car/evs/<string:name>', methods=['GET'])
 def get_evs_by_name(name):
     """Returns all the evs by name
 
@@ -270,7 +270,7 @@ def get_evs_by_name(name):
     return jsonify(evs_list)
 
 
-@cars_bp.route('/cars/exclusive', methods=['GET'])
+@cars_bp.route('/car/exclusive', methods=['GET'])
 def get_exclusive_cars():
     """Returns all the exclusive cars
 

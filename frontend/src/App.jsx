@@ -16,20 +16,6 @@ import axios from 'axios';
 
 function App() {
 
-  const [cars, setCars] = useState([])
-
-  useEffect(() => {
-    fetch(`${URL}/cars`, {
-      'methods': 'GET',
-      headers: {
-        'Content-Type': 'applications/json'
-      }
-    })
-      .then(res => res.json())
-      // .then(res => console.log(res))
-      .catch(error => console.log(error))
-  })
-
   axios.interceptors.request.use(
     (config) => {
         const csrfTokenRow = document.cookie.split('; ').find(row => row.startsWith('csrf_token='));

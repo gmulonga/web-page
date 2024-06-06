@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL, ACCESS_TOKEN } from '../constants';
+import { TESTIMONY_URL, ACCESS_TOKEN, CARS_URL } from '../constants';
 
 
 export default class CarsAPI {
@@ -22,6 +22,25 @@ export default class CarsAPI {
                 method: method,
                 url: url,
                 data: payload,
+                headers: {
+                    Authorization: `Bearer ${ACCESS_TOKEN}`
+                }
+            });
+            return { data: response.data, error: null, isLoading: false };
+        } catch (error) {
+            return { data: null, error, isLoading: false };
+        }
+    }
+
+    async updateRequest(url, payload, method = 'PUT') {
+        try {
+            const response = await axios({
+                method: method,
+                url: url,
+                data: payload,
+                headers: {
+                    Authorization: `Bearer ${ACCESS_TOKEN}`
+                }
             });
             return { data: response.data, error: null, isLoading: false };
         } catch (error) {
@@ -39,83 +58,67 @@ export default class CarsAPI {
     }
 
     getCars() {
-        const url = `${API_BASE_URL}/cars`;
+        const url = `${CARS_URL}`;
         return this.getRequest(url);
     }
 
     getCarById(id) {
-        let url = `${API_BASE_URL}/car/${id}`;
+        let url = `${CARS_URL}/${id}`;
         return this.getRequest(url);
     }
 
     getCarsByName(name) {
-        let url = `${API_BASE_URL}/cars/${name}`;
+        let url = `${CARS_URL}/${name}`;
         return this.getRequest(url);
     }
 
     getCarImages(carId) {
-        let url = `${API_BASE_URL}/car/${carId}/images`;
+        let url = `${CARS_URL}/${carId}/images`;
         return this.getRequest(url);
     }
 
     getEVs() {
-        const url = `${API_BASE_URL}/cars/evs`;
+        const url = `${CARS_URL}/evs`;
         return this.getRequest(url);
     }
 
     getEVsByName(name) {
-        let url = `${API_BASE_URL}/cars/evs/${name}`;
+        let url = `${CARS_URL}/evs/${name}`;
         return this.getRequest(url);
     }
 
     getExclusiveCars() {
-        const url = `${API_BASE_URL}/cars/exclusive`;
+        const url = `${CARS_URL}/exclusive`;
         return this.getRequest(url);
     }
 
-    addCar(carData, ACCESS_TOKEN) {
-        const url = `${API_BASE_URL}/car/new`;
-        return this.postRequest(url, carData, 'POST', {
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`
-            }
-        });
+    addCar(carData) {
+        const url = `${CARS_URL}/new`;
+        return this.postRequest(url, carData);
     }
 
-    deleteCar(id, ACCESS_TOKEN) {
-        let url = `${API_BASE_URL}/car/delete/${id}`;
-        return this.deleteRequest(url, {
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`
-            }
-        });
+    deleteCar(id) {
+        let url = `${CARS_URL}/delete/${id}`;
+        return this.deleteRequest(url);
     }
 
     getTestimonies() {
-        const url = `${API_BASE_URL}/testimony`;
+        const url = `${TESTIMONY_URL}`;
         return this.getRequest(url);
     }
 
     getTestimony(id) {
-        let url = `${API_BASE_URL}/testimony/${id}`;
+        let url = `${TESTIMONY_URL}/${id}`;
         return this.getRequest(url);
     }
 
-    addTestimony(testimonyData, ACCESS_TOKEN) {
-        const url = `${API_BASE_URL}/testimony/new`;
-        return this.postRequest(url, testimonyData, {
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`
-            }
-        })
+    addTestimony(testimonyData) {
+        const url = `${TESTIMONY_URL}/new`;
+        return this.postRequest(url, testimonyData)
     }
 
-    deleteTestimony(id, ACCESS_TOKEN) {
-        let url = `${API_BASE_URL}/testimony/delete/${id}`;
-        return this.deleteRequest(url, {
-            headers: {
-                Authorization: `Bearer ${ACCESS_TOKEN}`
-            }
-        });
+    deleteTestimony(id) {
+        let url = `${TESTIMONY_URL}/delete/${id}`;
+        return this.deleteRequest(url);
     }
 }

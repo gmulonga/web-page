@@ -33,6 +33,7 @@ function HomePage() {
     }, []);
 
     const mapCarsWithBase64Images = (carsList) => {
+        if (!carsList) return [];
         return carsList.map((carEntry) => ({
             ...carEntry,
             image: carEntry.images.length > 0 ? `${carEntry.images[0].image_base64}` : "",
