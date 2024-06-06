@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function ExclusiveOffersCard(props) {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/cars/${props.id}`);
+    navigate(`/car/${props.id}`);
   };
 
   return (
@@ -14,7 +14,7 @@ function ExclusiveOffersCard(props) {
           <h1 className="card-title car-name-white">{props.name}</h1>
           <h4 className="card-text car-name-white">Ksh {props.price}</h4>
         </div>
-        
+
         {props.image && (
           <img
             src={props.image}

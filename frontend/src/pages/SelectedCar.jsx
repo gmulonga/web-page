@@ -32,7 +32,7 @@ function SelectedCar() {
     const handleShow = () => setShowModal(true);
 
 
-    // handling the modal form submission 
+    // handling the modal form submission
     function isValidEmail(email) {
         // Regular expression pattern to validate an email
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -133,9 +133,9 @@ function SelectedCar() {
 
 
     const filterStateMap = {
-        ".technology": "setShowTechnology", // Add the dot in the key
+        ".technology": "setShowTechnology",
         ".dimensions": "setShowDimensions",
-        ".performance": "setShowPerformance", // Add the dot in the key
+        ".performance": "setShowPerformance",
     };
 
     const filterNames = [
@@ -182,7 +182,7 @@ function SelectedCar() {
             <section className="product-details spad">
                 <HeaderPage
                     label={car ? car.year + " " + car.name : "Loading..."}
-                    image={car ? car.images[0] : "../images/beemer.jpeg"}
+                    // image={car ? car.images[0] : "../images/beemer.jpeg"}
                 />
                 <div className="selected-car-page">
                     <div className="container">
@@ -196,7 +196,7 @@ function SelectedCar() {
                                     />
                                 </div>
 
-                                <OwlCarousel className="car-carousel" autoplay={true}>
+                                {/* <OwlCarousel className="car-carousel" autoplay={true}>
                                     {car &&
                                         car.images.map((image, index) => (
                                             <SelectedCarImages
@@ -205,7 +205,7 @@ function SelectedCar() {
                                                 onClick={(image, index) => handleImageClick(image, index)}
                                             />
                                         ))}
-                                </OwlCarousel>
+                                </OwlCarousel> */}
 
                             </div>
 

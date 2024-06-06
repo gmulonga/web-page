@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { URL } from '../constants';
+import { URL, ACCESS_TOKEN } from '../constants';
 
 function CarList() {
     const [cars, setCars] = useState([]);
@@ -20,9 +20,14 @@ function CarList() {
 
     const handleDeleteCar = async (id) => {
         try {
-            const response = await axios.delete(`${URL}/delete-car/${id}`);
+            const response = await axios.delete(`${URL}/car/delete/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${ACCESS_TOKEN}`,
+                    },
+                });
             if (response.data.status === 'success') {
-                fetchCars(); // Refresh the car list after deletion
+                fetchCars();
             } else {
                 console.error('Failed to delete car:', response.data.message);
             }

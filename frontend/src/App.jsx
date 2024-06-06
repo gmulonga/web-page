@@ -57,7 +57,7 @@ function App() {
           <Route path="/spares" element={<SparesPage />} />
           <Route path="/evs" element={<EVsPage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/cars/:id" element={<SelectedCar />} />
+          <Route path="/car/:id" element={<SelectedCar />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
         <Footer />

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import axios from 'axios';
-import { URL } from '../constants';
+import { URL, ACCESS_TOKEN } from '../constants';
 
 
 function AddCar() {
-
-    const accessToken = localStorage.getItem('access_token');
 
     const [carData, setCarData] = useState({
         name: '',
@@ -76,11 +74,11 @@ function AddCar() {
                 technology: carData.technology,
                 dimensions: carData.dimensions,
                 is_exclusive: carData.is_exclusive,
-                images: carImages.image_url, // Include the image URLs in the payload
+                images: carImages.image_url,
             };
             const response = await axios.post(`${URL}/car/new`, carPayload, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`, // Include the access token in the request headers
+                    Authorization: `Bearer ${ACCESS_TOKEN}`,
                 },
             });
 
