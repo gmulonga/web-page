@@ -20,7 +20,7 @@ function Testimonials() {
 
     const fetchTestimonials = async () => {
         try {
-            const response = await axios.get(`${URL}/testimonies`);
+            const response = await axios.get(`${URL}/testimony`);
             setTestimonials(response.data);
         } catch (error) {
             console.error('Error fetching testimonials:', error);
@@ -29,7 +29,7 @@ function Testimonials() {
 
     const handleDeleteTestimonial = async (id) => {
         try {
-            const response = await axios.delete(`${URL}/testimonies/${id}`);
+            const response = await axios.delete(`${URL}/testimony/${id}`);
             if (response.status === 204) {
                 fetchTestimonials();
             } else {
@@ -40,7 +40,7 @@ function Testimonials() {
         }
     };
 
-    
+
     const handleTestimonialChange = (propertyName, value) => {
         setEditedTestimonial(prevTestimonial => ({
             ...prevTestimonial,
@@ -52,13 +52,13 @@ function Testimonials() {
         const testimonialToEdit = testimonials.find(testimonial => testimonial.id === id);
         if (testimonialToEdit) {
             setEditedTestimonial(testimonialToEdit);
-            setShowModal(true); 
+            setShowModal(true);
         }
     };
 
     const handleUpdateTestimonial = async () => {
         try {
-            const response = await axios.put(`${URL}/testimonies/${editedTestimonial.id}`, editedTestimonial);
+            const response = await axios.put(`${URL}/testimony/${editedTestimonial.id}`, editedTestimonial);
             if (response.status === 204) {
                 fetchTestimonials();
                 setEditedTestimonial(null);
@@ -72,8 +72,8 @@ function Testimonials() {
 
 
     const handleSubmit = (e) => {
-        e.preventDefault(); 
-        handleUpdateTestimonial(); 
+        e.preventDefault();
+        handleUpdateTestimonial();
         handleClose(); 
     };
 

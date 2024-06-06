@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Editor } from '@tinymce/tinymce-react';
-import { URL } from "../constants";
+import { URL, ACCESS_TOKEN } from "../constants";
 
 function AddTestimony() {
     const [testimonyData, setTestimonyData] = useState({
@@ -32,10 +32,11 @@ function AddTestimony() {
             };
 
             // Send the payload to the backend
-            const response = await fetch(`${URL}/add-testimony`, {
+            const response = await fetch(`${URL}/testimony/new`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${ACCESS_TOKEN}`,
                 },
                 body: JSON.stringify(testimonyPayload),
             });
