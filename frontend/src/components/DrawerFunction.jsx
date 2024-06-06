@@ -27,11 +27,8 @@ function MiniDrawer() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Clear the access token from local storage
         localStorage.removeItem('access_token');
-
-        // Navigate to the home page or any other route you prefer
-        navigate('/'); // Replace '/' with the desired route
+        navigate('/');
     };
 
 

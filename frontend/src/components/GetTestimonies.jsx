@@ -74,7 +74,7 @@ function Testimonials() {
     const handleSubmit = (e) => {
         e.preventDefault();
         handleUpdateTestimonial();
-        handleClose(); 
+        handleClose();
     };
 
 
