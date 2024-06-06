@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderPage from '../components/HeaderPage';
-import { URL } from '../constants';
+import { API_BASE_URL } from '../constants';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -27,7 +27,7 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post(
-                `${URL}/login`,
+                `${API_BASE_URL}/login`,
                 { username, password },
                 // { headers: { 'X-CSRFToken': csrfToken } }
             );

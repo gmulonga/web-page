@@ -11,7 +11,7 @@ function LogoCarousel() {
   const logoItems = Object.values(CarLogos()).map((logo, index) => (
     <LogoItems key={index} image={logo.image} name={logo.name} />
   ));
-  
+
   return (
     <div>
       <OwlCarousel

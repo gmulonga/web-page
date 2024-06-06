@@ -32,9 +32,7 @@ function SelectedCar() {
     const handleShow = () => setShowModal(true);
 
 
-    // handling the modal form submission
     function isValidEmail(email) {
-        // Regular expression pattern to validate an email
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailPattern.test(email);
     }
@@ -46,7 +44,6 @@ function SelectedCar() {
         const phone = event.target.phone.value;
         const car_id = id;
 
-        // Check if the email is valid
         if (!isValidEmail(email)) {
             alert('Invalid email format'); // Show an error message for invalid email
             return;

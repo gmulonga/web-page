@@ -200,7 +200,7 @@ def delete_social():
 
 @admin_bp.route('/credentials/<int:id>/', methods=['GET'])
 def get_credentials(id):
-    """fetches the passwor and username"""
+    """fetches the password and username"""
     credentials = LoginCredentials.query.get(id)
 
     if credentials:

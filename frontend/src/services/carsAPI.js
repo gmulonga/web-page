@@ -1,5 +1,16 @@
 import axios from 'axios';
-import { TESTIMONY_URL, ACCESS_TOKEN, CARS_URL } from '../constants';
+import {
+    TESTIMONY_URL,
+    ACCESS_TOKEN,
+    CARS_URL,
+    REQUEST_URL,
+    SPARE_PART_URL,
+    SUBSCRIBE_URL,
+    LOGIN_URL,
+    LOGOUT_URL,
+    CREDENTIALS_URL,
+    SPARE_REQUEST_URL,
+} from '../constants';
 
 
 export default class CarsAPI {
@@ -48,7 +59,7 @@ export default class CarsAPI {
         }
     }
 
-    async deleteRequest(url) {
+    async deleteRequest(url, method = 'DELETE') {
         try {
             const response = await axios.delete(url);
             return { data: response.data, error: null, isLoading: false };
@@ -114,11 +125,81 @@ export default class CarsAPI {
 
     addTestimony(testimonyData) {
         const url = `${TESTIMONY_URL}/new`;
-        return this.postRequest(url, testimonyData)
+        return this.postRequest(url, testimonyData);
     }
 
     deleteTestimony(id) {
         let url = `${TESTIMONY_URL}/delete/${id}`;
         return this.deleteRequest(url);
+    }
+
+    getRequests() {
+        const url = `${REQUEST_URL}`;
+        return this.getRequest(url);
+    }
+
+    addRequest(requestData) {
+        const url = `${REQUEST_URL}/new`;
+        return this.postRequest(url, requestData);
+    }
+
+    deleteRequest(id) {
+        const url = `${REQUEST_URL}/delete/${id}`;
+        return this.deleteRequest(url);
+    }
+
+    getSpareParts() {
+        const url = `${SPARE_PART_URL}`;
+        return this.getRequest(url);
+    }
+
+    getSparePart(id) {
+        let url = `${SPARE_PART_URL}/${id}`;
+        return this.getRequest(url);
+    }
+
+    addSparePart(spareData) {
+        const url = `${SPARE_PART_URL}/new`;
+        return this.postRequest(url, spareData);
+    }
+
+    deleteSparePart(id) {
+        let url = `${SPARE_PART_URL}/delete/${id}`;
+        return this.deleteRequest(url);
+    }
+
+    subscribe() {
+        const url = `${SUBSCRIBE_URL}`;
+        return this.postRequest(url);
+    }
+
+    login() {
+        const url = `${LOGIN_URL}`;
+        return this.postRequest(url);
+    }
+
+    logout() {
+        const url = `${LOGOUT_URL}`;
+        return this.postRequest(url);
+    }
+
+    getCredentials() {
+        const url = `${CREDENTIALS_URL}`;
+        return this.getRequest(url);
+    }
+
+    getCredential(id) {
+        let url = `${CREDENTIALS_URL}/${id}`;
+        return this.getRequest(url);
+    }
+
+    addCredential(credentialData) {
+        const url = `${CREDENTIALS_URL}/new`;
+        return this.postRequest(url, credentialData);
+    }
+
+    updateCredential(id, credentialData) {
+        let url = `${CREDENTIALS_URL}/update/${id}`;
+        return this.putRequest(url, credentialData);
     }
 }

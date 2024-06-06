@@ -5,9 +5,6 @@ import Logo from "./Logo";
 
 
 
-
-
-
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,8 +42,7 @@ function Navbar() {
 
       $('#navbarSupportedContent ul li').removeClass('active');
       activeItemNewAnim.addClass('active');
-    
-     
+
 
       $('#navbarSupportedContent').on('click', 'li', function (e) {
         $('#navbarSupportedContent ul li').removeClass('active');
@@ -95,42 +91,42 @@ function Navbar() {
 
   return (
     <nav className={`navbar navbar-expand-custom navbar-mainbg ${isOpen ? 'open' : ''}`} style={{ position: 'fixed', top: 0, width: '100%', zIndex: 100 }}>
-  <div style={{ marginLeft: '20px', marginTop: '10px', marginBottom: '10px' }}>
-    <Logo />
-  </div>
-  <h2 className="company-name title">Car Connect</h2>
-  <button
-    className={`navbar-toggler ${isOpen ? 'open' : ''}`}
-    type="button"
-    onClick={toggleMenu}
-    aria-label="Toggle navigation"
-  >
-    <i className="fas fa-bars text-white"></i>
-  </button>
-  <div className={`collapse navbar-collapse justify-content-center ${isOpen ? 'show' : ''}`} id="navbarSupportedContent">
-    <ul className="navbar-nav ml-auto">
-      <div className="hori-selector">
-        <div className="left"></div>
-        <div className="right"></div>
+      <div style={{ marginLeft: '20px', marginTop: '10px', marginBottom: '10px' }}>
+        <Logo />
       </div>
-      <li className="nav-item active">
-        <Link to="/" className="nav-link active" aria-current="page">Home</Link>
-      </li>
-      <li className="nav-item">
-        <Link to="/cars" className="nav-link">Cars</Link>
-      </li>
-      <li className="nav-item">
-        <Link to="/evs" className="nav-link">Evs</Link>
-      </li>
-      <li className="nav-item">
-        <Link to="/spares" className="nav-link">Spares</Link>
-      </li>
-      <li className="nav-item">
-        <Link to="/about" className="nav-link">About</Link>
-      </li>
-    </ul>
-  </div>
-</nav>
+      <h2 className="company-name title">Car Connect</h2>
+      <button
+        className={`navbar-toggler ${isOpen ? 'open' : ''}`}
+        type="button"
+        onClick={toggleMenu}
+        aria-label="Toggle navigation"
+      >
+        <i className="fas fa-bars text-white"></i>
+      </button>
+      <div className={`collapse navbar-collapse justify-content-center ${isOpen ? 'show' : ''}`} id="navbarSupportedContent">
+        <ul className="navbar-nav ml-auto">
+          <div className="hori-selector">
+            <div className="left"></div>
+            <div className="right"></div>
+          </div>
+          <li className="nav-item active">
+            <Link to="/" className="nav-link active" aria-current="page">Home</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/cars" className="nav-link">Cars</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/evs" className="nav-link">Evs</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/spares" className="nav-link">Spares</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/about" className="nav-link">About</Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
   );
 }

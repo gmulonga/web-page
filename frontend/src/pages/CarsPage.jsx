@@ -24,9 +24,9 @@ function CarsPage() {
     fetchCars();
   }, []);
 
-  const handleClick = (name) => {
-    setSearchQuery(name);
-  };
+  // const handleClick = (name) => {
+  //   setSearchQuery(name);
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();

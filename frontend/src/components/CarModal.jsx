@@ -13,10 +13,8 @@ function CarModal({ onClose }) {
   };
 
   const handleAddCar = () => {
-    // Implement your logic to add the car here
-    // For this example, let's just log the car details
     console.log('Adding car:', carName, carPrice);
-    onClose(); // Close the modal
+    onClose();
   };
 
   return (

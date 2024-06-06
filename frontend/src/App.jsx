@@ -8,7 +8,7 @@ import CarsPage from "./pages/CarsPage";
 import SparesPage from "./pages/SparesPage";
 import EVsPage from "./pages/EVsPage";
 import AboutPage from "./pages/AboutPage";
-import ScrollToTop from "./components/ScrollToTop";
+import { ScrollToTop } from "./utilis/utilis";
 import Login from "./pages/Login";
 import AdminPage from "./pages/AdminPage";
 import { URL } from "./constants";
