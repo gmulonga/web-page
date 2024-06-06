@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import SendEmail from './SendingEmails';
+import SendEmail from '../email/SendingEmails';
 import MiniDrawer from './DrawerFunction';
-import CustomerRequests from './GetRequest';
+import CustomerRequests from '../admin-components/GetRequest';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import SpareRequests from './GetSparesRequest';
 

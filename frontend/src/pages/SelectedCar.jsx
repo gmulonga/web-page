@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import HeaderPage from "../components/HeaderPage";
 import SelectedCarImages from "../components/SelectedCarImages";
 import { useParams } from "react-router-dom";
-import WhatsnewCard from "../components/WhatsnewCard";
 import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
@@ -16,6 +15,7 @@ import { faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import { faCogs } from '@fortawesome/free-solid-svg-icons';
 import { faCar } from '@fortawesome/free-solid-svg-icons';
 import { URL } from "../constants";
+import CarCard from "../components/CarCard";
 
 function SelectedCar() {
     const { id } = useParams();
@@ -45,7 +45,7 @@ function SelectedCar() {
         const car_id = id;
 
         if (!isValidEmail(email)) {
-            alert('Invalid email format'); // Show an error message for invalid email
+            alert('Invalid email format');
             return;
         }
 
@@ -366,7 +366,7 @@ function SelectedCar() {
                     }}
                 >
                     {carsWithBase64Images.map((carEntry) => (
-                        <WhatsnewCard
+                        <CarCard
                             key={carEntry.id}
                             id={carEntry.id}
                             name={carEntry.name}

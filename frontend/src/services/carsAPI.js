@@ -202,4 +202,19 @@ export default class CarsAPI {
         let url = `${CREDENTIALS_URL}/update/${id}`;
         return this.putRequest(url, credentialData);
     }
+
+    getSpareRequests() {
+        const url = `${SPARE_REQUEST_URL}`;
+        return this.getRequest(url);
+    }
+
+    addSpareRequest(data) {
+        const url = `${SPARE_REQUEST_URL}/new`;
+        return this.postRequest(url, data);
+    }
+
+    deleteSpareRequest(id) {
+        let url = `${SPARE_REQUEST_URL}/${id}`;
+        return this.deleteRequest(url);
+    }
 }

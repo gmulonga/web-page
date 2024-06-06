@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PatnerIcon from "./PatnerIcon";
 import axios from 'axios';
 import { URL } from '../constants';
+
 
 var year = new Date().getFullYear();
 
@@ -67,18 +67,18 @@ function Footer() {
 
   const [socialList, setSocialList] = useState([]);
 
-    useEffect(() => {
-        fetchSocial();
-    }, []);
+  useEffect(() => {
+    fetchSocial();
+  }, []);
 
-    const fetchSocial = async () => {
-        try {
-            const response = await axios.get(`${URL}/get_social`);
-            setSocialList(response.data.social);
-        } catch (error) {
-            console.error('Error fetching social:', error);
-        }
-    };
+  const fetchSocial = async () => {
+    try {
+      const response = await axios.get(`${URL}/get_social`);
+      setSocialList(response.data.social);
+    } catch (error) {
+      console.error('Error fetching social:', error);
+    }
+  };
 
   console.log(socialList);
 
@@ -132,11 +132,6 @@ function Footer() {
             <div className="center-patner container">
               <div className='center-header'>
                 <h2 className="title footer-text f-header">Partners</h2>
-              </div>
-              <div className="partner-icons">
-                {partnersWithBase64Images.map(partner => (
-                  <PatnerIcon key={partner.id} image={partner.image} />
-                ))}
               </div>
             </div>
             <div>

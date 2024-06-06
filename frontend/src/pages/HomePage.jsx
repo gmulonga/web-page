@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ExclusiveOffersCard from "../components/ExclusiveOffersCard";
-import WhatsnewCard from "../components/WhatsnewCard";
+import CarCard from "../components/CarCard";
 import TestimonialCard from "../components/TestimonialCard";
 import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
@@ -90,7 +89,7 @@ function HomePage() {
             <h1 className="heading-label">EXCLUSIVE OFFERS</h1>
             <div className="row">
                 {exclusiveWithBase64Images.slice(-4).map((carEntry) => (
-                    <ExclusiveOffersCard
+                    <CarCard
                         key={carEntry.id}
                         id={carEntry.id}
                         name={carEntry.name}
@@ -114,7 +113,7 @@ function HomePage() {
                     }}
                 >
                     {carsWithBase64Images.slice(-6).map((carEntry) => (
-                        <WhatsnewCard
+                        <CarCard
                             key={carEntry.id}
                             id={carEntry.id}
                             name={carEntry.name}
@@ -125,7 +124,6 @@ function HomePage() {
                 </OwlCarousel>
             </div>
         </div>
-
 
         {/* where to find us section */}
 
@@ -139,6 +137,7 @@ function HomePage() {
                 <p>What a beautiful sunrise</p>
             </div>
         </div>
+
 
 
 

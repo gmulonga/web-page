@@ -77,8 +77,7 @@ function CarsPage() {
                 placeholder="Search for a car"
               />
               <button type="submit" className="form-control submit">
-                <i className="fa fa-search searchIcon"></i>{" "}
-                <span className="car-name-white">Search Car</span>
+                <span className="car-name-white">Search</span>
               </button>
             </div>
           </form>

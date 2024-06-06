@@ -1,21 +1,16 @@
 import React, { useState } from "react";
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import AddCar from "./AddCar";
-import AddTestimony from "./AddTestimony";
+import AddCar from "../admin-components/AddCar";
+import AddTestimony from "../admin-components/AddTestimony";
 import Testimonials from "./GetTestimonies";
-import CarList from "./DeleteCar";
-import AddAboutUs from "./AboutUs";
-import EditAboutUs from "./EditAboutUs";
-import AddPatnerIcon from "./AddPatnerIcon";
-import DeletePartner from "./DeletePartner";
-import AddSparePart from "./AddSparePart";
-import DeleteSparePart from "./DeleteSparePart";
-import AddSocial from "./AddSocial";
+import CarList from "../admin-components/DeleteCar";
+import AddSparePart from "../admin-components/AddSparePart";
+import DeleteSparePart from "../admin-components/DeleteSparePart";
 import { useNavigate } from 'react-router-dom';
-import EmailConfiguration from "./EmailConfiguration";
-import SetPassword from "./SetPassword";
-import UpdateCredentials from "./UpdatePassword";
-import UpdateEmail from "./UpdateEmailConfiguration";
+import EmailConfiguration from "../email/EmailConfiguration";
+import SetPassword from "../admin-components/SetPassword";
+import UpdateCredentials from "../admin-components/UpdatePassword";
+import UpdateEmail from "../email/UpdateEmailConfiguration";
 
 function MiniDrawer() {
     const [selectedMenuItem, setSelectedMenuItem] = useState(null);
@@ -88,28 +83,11 @@ function MiniDrawer() {
                             <Testimonials />
                         )}
 
-                        {selectedMenuItem === "Add About Us" && (
-                            <AddAboutUs />
-                        )}
-                        {selectedMenuItem === "Edit & Delete About Us" && (
-                            <EditAboutUs />
-                        )}
-
                         {selectedMenuItem === "Add Spare Part" && (
                             <AddSparePart />
                         )}
                         {selectedMenuItem === "Delete Spare Part" && (
                             <DeleteSparePart />
-                        )}
-                        {selectedMenuItem === "Add Social" && (
-                            <AddSocial />
-                        )}
-
-                        {selectedMenuItem === "Add Patner Icon" && (
-                            <AddPatnerIcon />
-                        )}
-                        {selectedMenuItem === "Delete Patner Icon" && (
-                            <DeletePartner />
                         )}
                         {selectedMenuItem === "Email Configuration" && (
                            <EmailConfiguration />
