@@ -1,50 +1,11 @@
 from flask import jsonify, Blueprint, request
 from flask_jwt_extended import jwt_required
 from .models import (
-    Cars, Testimonies, CarImages, db
+    Cars, CarImages, db
 )
 
 
 cars_bp = Blueprint('cars', __name__)
-
-
-@cars_bp.route('/', methods=['GET'])
-def home():
-    """Gets all the cars and testimonials
-
-    Returns:
-        json: returns a json data for the cars and testimonies
-    """
-    cars = Cars.query.all()
-    testimonials = Testimonies.query.all()
-
-    car_list = []
-    for car in cars:
-        car_dict = {
-            'id': car.id,
-            'name': car.name,
-            'price': car.price,
-            'type': car.type,
-            'year': car.year,
-            'description': car.description,
-        }
-        car_list.append(car_dict)
-
-    testimony_list = []
-    for testimony in testimonials:
-        testimony_dict = {
-            'id': testimony.id,
-            'name': testimony.name,
-            'testimony': testimony.testimony,
-        }
-        testimony_list.append(testimony_dict)
-
-    data = {
-        'cars': car_list,
-        'testimonials': testimony_list,
-    }
-
-    return jsonify(data)
 
 
 @cars_bp.route('/car', methods=['GET'])
@@ -101,6 +62,13 @@ def add_car():
 
             new_car = Cars(**car_data)
             db.session.add(new_car)
+            db.session.commit()
+
+             # Associate images with the new car instance
+            images = data.get('images', [])
+            for image_base64 in images:
+                new_image = CarImages(image_base64=image_base64, car=new_car)
+                db.session.add(new_image)
             db.session.commit()
 
             return jsonify(

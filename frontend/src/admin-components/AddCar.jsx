@@ -123,8 +123,6 @@ function AddCar() {
         updateImages();
     };
 
-    console.log(carImages)
-
     return <div>
 
         {/* Name */}
