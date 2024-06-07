@@ -23,11 +23,7 @@ function CarList() {
     const handleDeleteCar = async (id) => {
         try {
             const response = await carsApi.deleteCar(id);
-            if (response.data.status === 'success') {
-                fetchCars();
-            } else {
-                console.error('Failed to delete car:', response.data.message);
-            }
+            fetchCars();
         } catch (error) {
             console.error('Error deleting car:', error);
         }
@@ -53,7 +49,7 @@ function CarList() {
                             <td>{car.name}</td>
                             <td>{car.year}</td>
                             <td>
-                                <button className='testimony-button' onClick={() => handleDeleteCar(car.id)}>
+                                <button className='delete-buttonm' onClick={() => handleDeleteCar(car.id)}>
                                     Delete
                                 </button>
                             </td>
