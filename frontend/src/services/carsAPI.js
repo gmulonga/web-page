@@ -61,7 +61,13 @@ export default class CarsAPI {
 
     async deleteRequest(url, method = 'DELETE') {
         try {
-            const response = await axios.delete(url);
+            const response = await axios({
+                method: method,
+                url: url,
+                headers: {
+                    Authorization: `Bearer ${ACCESS_TOKEN}`
+                }
+            })
             return { data: response.data, error: null, isLoading: false };
         } catch (error) {
             return { data: null, error, isLoading: false };
@@ -143,7 +149,7 @@ export default class CarsAPI {
         return this.postRequest(url, requestData);
     }
 
-    deleteRequest(id) {
+    deleteCustomerRequest(id) {
         const url = `${REQUEST_URL}/delete/${id}`;
         return this.deleteRequest(url);
     }

@@ -6,7 +6,6 @@ import { URL } from '../constants';
 var year = new Date().getFullYear();
 
 function isValidEmail(email) {
-  // Regular expression pattern to validate an email
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailPattern.test(email);
 }
@@ -19,14 +18,13 @@ function handleSubscribe() {
     axios.post(`${URL}/subscribe`, { email })
       .then((response) => {
         alert(response.data);
-        // console.log(response);
       })
       .catch((error) => {
         alert('Error:', error);
         console.log('Error:', error);
       });
   } else {
-    alert('Invalid email format'); // Show an error message for invalid email
+    alert('Invalid email format');
   }
 }
 
@@ -34,12 +32,11 @@ function handleSubscribe() {
 const handleButtonClick = () => {
   axios.get(`${URL}/emails`)
     .then((response) => {
-      console.log(response.data); // Display the response from the server
+      console.log(response.data);
 
     })
     .catch((error) => {
       console.error('Error:', error);
-      // Handle error (e.g., show an error message to the user)
     });
 };
 

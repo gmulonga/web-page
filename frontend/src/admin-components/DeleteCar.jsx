@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { URL, ACCESS_TOKEN } from '../constants';
+import CarsAPI from '../services/carsAPI';
 
 function CarList() {
     const [cars, setCars] = useState([]);
+    const carsApi = new CarsAPI();
 
     useEffect(() => {
         fetchCars();
@@ -11,7 +13,7 @@ function CarList() {
 
     const fetchCars = async () => {
         try {
-            const response = await axios.get(`${URL}/cars`);
+            const response = await carsApi.getCars();
             setCars(response.data);
         } catch (error) {
             console.error('Error fetching cars:', error);
@@ -20,12 +22,7 @@ function CarList() {
 
     const handleDeleteCar = async (id) => {
         try {
-            const response = await axios.delete(`${URL}/car/delete/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${ACCESS_TOKEN}`,
-                    },
-                });
+            const response = await carsApi.deleteCar(id);
             if (response.data.status === 'success') {
                 fetchCars();
             } else {

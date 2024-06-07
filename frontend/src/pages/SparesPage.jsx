@@ -136,7 +136,7 @@ function SparesPage() {
 
             <br />
 
-            <button type="submit" className="add-button">Search</button>
+            <button type="submit" className="cars-button full-width">Search</button>
           </form>
 
           <div className="space">

@@ -6,7 +6,6 @@ import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import mixitup from "mixitup";
-import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
@@ -16,6 +15,10 @@ import { faCogs } from '@fortawesome/free-solid-svg-icons';
 import { faCar } from '@fortawesome/free-solid-svg-icons';
 import { URL } from "../constants";
 import CarCard from "../components/CarCard";
+import CarsAPI from "../services/carsAPI";
+import { openModal, closeModal } from "../utilis/utilis";
+import Modal from "../components/Modal";
+
 
 function SelectedCar() {
     const { id } = useParams();
@@ -26,11 +29,19 @@ function SelectedCar() {
     const [showPerformance, setShowPerformance] = useState(true);
     const [showTechnology, setShowTechnology] = useState(false);
     const [showDimensions, setShowDimensions] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const carsApi = new CarsAPI();
 
-    const handleClose = () => setShowModal(false);
-    const handleShow = () => setShowModal(true);
 
+    const [isModalVisible, setModalVisible] = useState(false);
+
+
+    const handleShowModal = () => {
+        openModal(setModalVisible);
+    };
+
+    const handleCloseModal = () => {
+        closeModal(setModalVisible);
+    };
 
     function isValidEmail(email) {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,37 +67,23 @@ function SelectedCar() {
             car_id: car_id
         };
 
-        // Send the form data to the Flask API route
         axios.post(`${URL}/add_request`, formData)
             .then((response) => {
-                console.log(response.data); // Display the response from the server
-                // Handle success, e.g., show a success message to the user
-                handleClose();
+                console.log(response.data);
+                // handleClose();
             })
             .catch((error) => {
                 console.error('Error:', error);
-                // Handle error, e.g., show an error message to the user
             });
     };
 
 
-
-
     useEffect(() => {
         const fetchCar = async () => {
-            try {
-                const response = await fetch(`${URL}/cars/${id}`);
-                if (response.ok) {
-                    const carData = await response.json();
-                    setCar(carData);
-                    setBigImage(carData ? carData.images[0] : "../images/beemer.jpeg");
-                } else {
-                    // Handle the error case
-                    console.error("Failed to fetch car");
-                }
-            } catch (error) {
-                // Handle any network errors
-                console.error("Error fetching car", error);
+            const response = await carsApi.getCarById(id);
+            if (response.data) {
+                setCar(response.data);
+                setBigImage(response.data.images ? response.data.images[0] : "../images/beemer.jpeg");
             }
         };
 
@@ -94,34 +91,23 @@ function SelectedCar() {
     }, [id]);
 
 
-
     useEffect(() => {
         if (car && car.name) {
             const fetchCarsByType = async () => {
-                try {
-                    const response = await fetch(`${URL}/get-cars/${car.name}`);
-                    if (response.ok) {
-                        const carsData = await response.json();
-                        setCarType(carsData);
-                    } else {
-                        console.error('Failed to fetch cars');
-                    }
-                } catch (error) {
-                    console.error('Error fetching cars', error);
+                const response = await carsApi.getCarsByName(car.name);
+                if (response.data) {
+                    setCarType(response.data);
                 }
             };
-
             fetchCarsByType();
         }
     }, [car]);
 
     useEffect(() => {
-        // Check if the container element exists before initializing mixitup
         const containerEl = document.querySelector(".featured__filter");
         if (containerEl) {
             const mixer = mixitup(containerEl);
 
-            // Clean up MixItUp instance on component unmount
             return () => {
                 mixer.destroy();
             };
@@ -179,7 +165,7 @@ function SelectedCar() {
             <section className="product-details spad">
                 <HeaderPage
                     label={car ? car.year + " " + car.name : "Loading..."}
-                    // image={car ? car.images[0] : "../images/beemer.jpeg"}
+                // image={car ? car.images[0] : "../images/beemer.jpeg"}
                 />
                 <div className="selected-car-page">
                     <div className="container">
@@ -216,39 +202,19 @@ function SelectedCar() {
                                             <h4 className="car-name">Ksh: {car ? car.price : "1,200,000"}</h4>
                                         </div>
                                         <div className="col-lg-6">
-                                            <button class="make-request" onClick={handleShow}>Make Request</button>
+
+                                            <button className="cars-button" onClick={handleShowModal} role="button">Make Request</button>
+                                            {isModalVisible && (
+                                                <Modal
+                                                    modal_id="exampleModal"
+                                                    modal_title="Example Modal Title"
+                                                    onClose={handleCloseModal}
+                                                >
+                                                    <p>This is the modal content.</p>
+                                                </Modal>
+                                            )}
+
                                         </div>
-                                    </div>
-
-                                    <div>
-
-                                        <Modal centered show={showModal} onHide={handleClose} className="custom-modal">
-                                            <Modal.Header closeButton style={{ color: 'white' }}>
-                                                <Modal.Title>Make a Request</Modal.Title>
-                                            </Modal.Header>
-                                            <Modal.Body>
-                                                <Form onSubmit={handleSubmit}>
-                                                    <Form.Group controlId="name">
-                                                        <Form.Label className="car-name">Name:</Form.Label>
-                                                        <Form.Control type="name" placeholder="Enter your name" required />
-                                                    </Form.Group>
-
-                                                    <Form.Group controlId="email">
-                                                        <Form.Label className="car-name">Email:</Form.Label>
-                                                        <Form.Control type="email" placeholder="Enter your email" required />
-                                                    </Form.Group>
-
-                                                    <Form.Group controlId="phone">
-                                                        <Form.Label className="car-name">Phone Number:</Form.Label>
-                                                        <Form.Control type="tel" placeholder="Enter your phone number" required />
-                                                    </Form.Group>
-                                                    <Button variant="primary" type="submit" className="submit-modal">
-                                                        Submit
-                                                    </Button>
-                                                </Form>
-                                            </Modal.Body>
-
-                                        </Modal>
                                     </div>
                                 </div>
                             </div>

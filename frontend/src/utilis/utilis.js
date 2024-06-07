@@ -15,3 +15,14 @@ export function isValidEmail(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
 }
+
+
+// utils/modalUtils.js
+
+export function openModal(setModalVisible) {
+    setModalVisible(true);
+}
+
+export function closeModal(setModalVisible) {
+    setModalVisible(false);
+}

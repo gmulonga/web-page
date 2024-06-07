@@ -219,7 +219,7 @@ function AddCar() {
 
         {/* Other input fields for car data */}
 
-        <button onClick={handleSubmit} className="add-button">Add Car</button>
+        <button onClick={handleSubmit} className="cars-button full-width">Add Car</button>
     </div>
 }
 
