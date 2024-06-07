@@ -52,7 +52,7 @@ function EmailConfiguration() {
 
             <label htmlFor='password' className="car-name">Password:</label><br />
             <input type='text' id='password' name='password' className="full-width" value={emailData.password} onChange={handleEmailChange} /><br />
-            <button onClick={handleAdd} className="add-button">Set Email</button>
+            <button onClick={handleAdd} className="cars-button full-width">Set Email</button>
         </div>
     );
 }

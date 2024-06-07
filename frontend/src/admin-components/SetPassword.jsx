@@ -51,7 +51,7 @@ function SetPassword() {
             <label htmlFor='password' className="car-name">Password:</label><br />
             <input type='text' id='password' name='password' className="full-width" value={passwordData.password} onChange={handlePasswordChange} /><br />
             
-            <button onClick={handleAdd} className="add-button">Set Password</button>
+            <button onClick={handleAdd} className="cars-button full-width">Set Password</button>
         </div>
     );
 }

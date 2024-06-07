@@ -72,7 +72,7 @@ function AddTestimony() {
             /><br />
 
 
-            <button onClick={handleAdd} className="add-button">Add Testimony</button>
+            <button onClick={handleAdd} className="cars-button full-width">Add Testimony</button>
         </div>
     );
 }

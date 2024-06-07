@@ -49,7 +49,7 @@ function CarList() {
                             <td>{car.name}</td>
                             <td>{car.year}</td>
                             <td>
-                                <button className='delete-buttonm' onClick={() => handleDeleteCar(car.id)}>
+                                <button className='delete-button' onClick={() => handleDeleteCar(car.id)}>
                                     Delete
                                 </button>
                             </td>

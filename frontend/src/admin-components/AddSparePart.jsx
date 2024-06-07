@@ -106,7 +106,7 @@ function AddSparePart() {
             <label htmlFor='part_no' className='car-name'>Part Number:</label><br />
             <input type='text' id='part_no' name='part_no' className="full-width" value={formData.part_no} onChange={handleInputChange} /><br />
 
-            <button onClick={handleSubmit} className="add-button">Add Spare Part</button>
+            <button onClick={handleSubmit} className="cars-button full-width">Add Spare Part</button>
         </div>
     );
 }

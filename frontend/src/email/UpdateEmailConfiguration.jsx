@@ -57,7 +57,7 @@ function UpdateEmail() {
             <label htmlFor='new-password' className="car-name">New Password:</label><br />
             <input type='text' id='new-password' name='new-password' className="full-width" value={password} onChange={(e) => setPassword(e.target.value)} /><br />
 
-            <button onClick={handleUpdate} className="add-button">Change Credentials</button>
+            <button onClick={handleUpdate} className="cars-button full-width">Change Credentials</button>
         </div>
     );
 }

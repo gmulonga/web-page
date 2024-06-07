@@ -67,8 +67,8 @@ function CustomerRequests() {
                                 <Card.Text>Name: {request.name}</Card.Text>
                                 <Card.Text>Email: {request.email}</Card.Text>
                                 <Card.Text>Phone: {request.phone}</Card.Text>
-                                <Button variant="primary" style={{ backgroundColor: '#041C32', marginRight: '5px', width: '49%' }} onClick={() => handleGetCar(request.car_id)}>Show Car Info</Button>
-                                <Button className='testimony-button' style={{ backgroundColor: '#F94C10', width: '49%' }} variant="danger" onClick={() => handleDeleteCustomerRequest(request.id)}>Delete</Button>
+                                <Button className='cars-button' onClick={() => handleGetCar(request.car_id)}>Show Car Info</Button>
+                                <Button className='delete-button' onClick={() => handleDeleteCustomerRequest(request.id)}>Delete</Button>
                             </Card.Body>
                         </Card>
                     </div>

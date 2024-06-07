@@ -51,7 +51,7 @@ function DeleteSparePart() {
                             <td style={{ whiteSpace: 'nowrap' }}>{spare.year}</td>
                             <td style={{ whiteSpace: 'nowrap' }}>{spare.chassis_no}</td> 
                             <td>
-                                <button className='testimony-button' onClick={() => handleDeleteSpare(spare.id)}>
+                                <button className='delete-button' onClick={() => handleDeleteSpare(spare.id)}>
                                     Delete
                                 </button>
                             </td>

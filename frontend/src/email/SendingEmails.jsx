@@ -71,7 +71,7 @@ function SendEmail() {
                 onEditorChange={handleEmailBodyChange}
             /><br />
 
-            <button onClick={handleSend} className="add-button">Send Email</button>
+            <button onClick={handleSend} className="cars-button full-width">Send Email</button>
         </div>
     );
 }

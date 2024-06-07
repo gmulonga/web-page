@@ -96,12 +96,12 @@ function Testimonials() {
                             <td>{testimonial.name}</td>
                             <td>{testimonial.testimony.substring(0, 30)}...</td>
                             <td>
-                                <button className='testimony-edit' onClick={() => handleEditTestimonial(testimonial.id)}>
+                                <button className='edit-button' onClick={() => handleEditTestimonial(testimonial.id)}>
                                     Edit
                                 </button>
                             </td>
                             <td>
-                                <button className='testimony-button' onClick={() => handleDeleteTestimonial(testimonial.id)}>
+                                <button className='delete-button' onClick={() => handleDeleteTestimonial(testimonial.id)}>
                                     Delete
                                 </button>
                             </td>
