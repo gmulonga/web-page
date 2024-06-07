@@ -16,6 +16,19 @@ export function isValidEmail(email) {
     return emailPattern.test(email);
 }
 
+export function generateYearOptions() {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = currentYear; i >= currentYear - 20; i--) {
+        years.push(i);
+    }
+    return years.map((year) => (
+        <option key={year} value={year}>
+            {year}
+        </option>
+    ));
+}
+
 
 // utils/modalUtils.js
 

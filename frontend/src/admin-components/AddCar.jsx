@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import axios from 'axios';
-import { URL, ACCESS_TOKEN } from '../constants';
+import Message from '../components/Message';
+import CarsAPI from '../services/carsAPI';
+import { generateYearOptions } from '../utilis/utilis';
 
 
 function AddCar() {
+
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
+
+    const carApi = new CarsAPI();
 
     const [carData, setCarData] = useState({
         name: '',
@@ -58,12 +65,8 @@ function AddCar() {
         }));
     };
 
-
-    // the configuration of adding a car to the DB
-
     const handleSubmit = async () => {
         try {
-            // Prepare the car data payload
             const carPayload = {
                 name: carData.name,
                 price: carData.price,
@@ -76,33 +79,19 @@ function AddCar() {
                 is_exclusive: carData.is_exclusive,
                 images: carImages.image_url,
             };
-            const response = await axios.post(`${URL}/car/new`, carPayload, {
-                headers: {
-                    Authorization: `Bearer ${ACCESS_TOKEN}`,
-                },
-            });
+            const response = await carApi.addCar(carPayload);
 
-            alert("Car and image addition successful");
+            setMessage('Car added successfully!');
+            setAlertType('alert-success');
+            setShowMessage(true);
+
         } catch (error) {
-            alert("Car and image addition failed");
+            setMessage('Error car was not added!');
+            setAlertType('alert-danger');
+            setShowMessage(true);
         }
     };
 
-
-    const generateYearOptions = () => {
-        const currentYear = new Date().getFullYear();
-        const years = [];
-        for (let i = currentYear; i >= currentYear - 20; i--) {
-            years.push(i);
-        }
-        return years.map((year) => (
-            <option key={year} value={year}>
-                {year}
-            </option>
-        ));
-    };
-
-    // function to change images to string
 
     const handleImageChange = (event, field) => {
         const selectedFiles = event.target.files;
@@ -134,9 +123,10 @@ function AddCar() {
         updateImages();
     };
 
-
+    console.log(carImages)
 
     return <div>
+
         {/* Name */}
         <h2 className='car-name'>Add Car</h2>
         <label htmlFor='name' className='car-name'>Car Name:</label><br />
@@ -218,6 +208,14 @@ function AddCar() {
         /><br />
 
         {/* Other input fields for car data */}
+
+        {showMessage && (
+            <Message
+                message={message}
+                onClose={() => setShowMessage(false)}
+                alertType={alertType}
+            />
+        )}
 
         <button onClick={handleSubmit} className="cars-button full-width">Add Car</button>
     </div>
