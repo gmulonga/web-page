@@ -3,6 +3,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import Message from '../components/Message';
 import CarsAPI from '../services/carsAPI';
 import { generateYearOptions } from '../utilis/utilis';
+import CustomInput from '../Input-components/input';
 
 
 function AddCar() {
@@ -124,15 +125,16 @@ function AddCar() {
     };
 
     return <div>
-
-        {/* Name */}
-        <h2 className='car-name'>Add Car</h2>
-        <label htmlFor='name' className='car-name'>Car Name:</label><br />
-        <input type='text' id='name' name='name' className="full-width" value={carData.name} onChange={handleInputChange} /> <br />
-
-        {/* Price */}
-        <label htmlFor='price' className='car-name'>Car Price:</label><br />
-        <input type='text' id='price' name='price' className="full-width" value={carData.price} onChange={handleInputChange} /><br />
+        <CustomInput
+            name="Car Name"
+            id="car-name"
+            onChange={handleInputChange}
+        />
+        <CustomInput
+            name="Car Price"
+            id="car-name"
+            onChange={handleInputChange}
+        />
 
         <label htmlFor='year' className='car-name'>Year:</label><br />
         <select id='year' name='year' className="selector-style" value={carData.year} onChange={handleInputChange}>

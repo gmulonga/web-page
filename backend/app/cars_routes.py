@@ -64,7 +64,6 @@ def add_car():
             db.session.add(new_car)
             db.session.commit()
 
-             # Associate images with the new car instance
             images = data.get('images', [])
             for image_base64 in images:
                 new_image = CarImages(image_base64=image_base64, car=new_car)

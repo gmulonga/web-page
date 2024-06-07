@@ -152,6 +152,38 @@
 
 
 
+/* INPUT FIELD STYLES */
+
+.custom-input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.custom-input-label {
+  margin-left: 1em;
+  color: var(--dark-color);
+  font-family: var(--font-family);
+}
+
+.custom-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.3s;
+
+  /* For removing the default inner shadow in some browsers like Safari */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.custom-input:focus {
+  border-color: #66afe9;
+}
+
 
 
 
@@ -1272,7 +1304,7 @@ footer {
 }
 
 input[type=text] {
-  width: 50%;
+
   padding: 10px 20px;
   margin: 8px 0;
   box-sizing: border-box;
