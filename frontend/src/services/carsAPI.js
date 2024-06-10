@@ -37,7 +37,12 @@ export default class CarsAPI {
                     Authorization: `Bearer ${ACCESS_TOKEN}`
                 }
             });
-            return { data: response.data, error: null, isLoading: false };
+            console.log("this is the response")
+            if (response.status === 200 && response.data.status === "success") {
+                return { data: response.data, error: null, isLoading: false };
+            } else {
+                return { data: null, error: response.error || "Error occurred", isLoading: false };
+            }
         } catch (error) {
             return { data: null, error, isLoading: false };
         }

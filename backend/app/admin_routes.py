@@ -1,9 +1,10 @@
 import logging
+import os
 
 from flask import jsonify, Blueprint, request, session, redirect, url_for
 from flask_jwt_extended import jwt_required, create_access_token
 from .models import (
-    LoginCredentials, Patners, Social, db
+    LoginCredentials, db
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import validate_csrf, CSRFError
@@ -17,7 +18,8 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger(__name__)
 
-USERS = {'admin': '1234'}
+INIT_USERNAME = os.environ.get("INIT_USERNAME")
+INIT_PASSWORD = os.environ.get("INIT_PASSWORD")
 
 
 @admin_bp.route('/check-auth/', methods=['GET'])
@@ -54,8 +56,8 @@ def login():
     username = data.get('username')
     password = data.get('password')
 
-    if db.session.query(LoginCredentials).first() == 0:
-        if USERS.get(username) == password:
+    if LoginCredentials.query.filter_by(username=username).first() == None:
+        if username == INIT_USERNAME and password == INIT_PASSWORD:
             access_token = create_access_token(identity=username)
             return jsonify({"status": "success", "access_token": access_token})
         return jsonify({

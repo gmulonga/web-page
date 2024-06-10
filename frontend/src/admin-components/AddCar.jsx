@@ -81,11 +81,14 @@ function AddCar() {
                 images: carImages.image_url,
             };
             const response = await carApi.addCar(carPayload);
-
-            setMessage('Car added successfully!');
-            setAlertType('alert-success');
+            if (response.data.status == "success") {
+                setMessage('Car added successfully!');
+                setAlertType('alert-success');
+            } else {
+                setMessage('Error: car was not added! please use jpeg images');
+                setAlertType('alert-danger');
+            }
             setShowMessage(true);
-
         } catch (error) {
             setMessage('Error car was not added!');
             setAlertType('alert-danger');

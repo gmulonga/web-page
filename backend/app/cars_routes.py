@@ -75,11 +75,11 @@ def add_car():
                     "status": "success",
                     "message": "Car added successfully"
                 }
-            )
+            ), 200
 
         except Exception as e:
             db.session.rollback()
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': str(e)}), 400
     else:
         return jsonify({'error': 'Invalid request'}), 400
 
