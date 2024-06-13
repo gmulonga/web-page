@@ -191,7 +191,7 @@ def delete_testimony(testimony_id):
         return jsonify({'error': str(e)}), 500
 
 
-@request_bp.route('/spare_parts', methods=['GET'])
+@request_bp.route('/spare_part', methods=['GET'])
 def get_spare_parts():
     """fetches all the spare parts from the DB
 
@@ -266,7 +266,7 @@ def get_spare_part(spare_id):
         return jsonify({'error': str(e)}), 500
 
 
-@request_bp.route('/spare_parts/<string:make>/<string:year>', methods=['GET'])
+@request_bp.route('/spare_part/<string:make>/<string:year>', methods=['GET'])
 def get_spare_parts_by_make_and_year(make, year):
     """returns a spare part for a particular year and make
 
