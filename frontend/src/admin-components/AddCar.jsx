@@ -129,13 +129,15 @@ function AddCar() {
 
     return <div>
         <CustomInput
-            name="Car Name"
-            id="car-name"
+            name="Name"
+            id="name"
+            value={carData.name}
             onChange={handleInputChange}
         />
         <CustomInput
-            name="Car Price"
-            id="car-name"
+            name="Price"
+            id="price"
+            value={carData.price}
             onChange={handleInputChange}
         />
 

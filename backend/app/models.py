@@ -23,10 +23,10 @@ class Cars(db.Model):
     price = db.Column(db.String(255), nullable=False)
     year = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(1000), nullable=False)
-    dimensions = db.Column(db.String(255), nullable=False)
-    technology = db.Column(db.String(255), nullable=False)
-    engine = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    dimensions = db.Column(db.Text, nullable=False)
+    technology = db.Column(db.Text, nullable=False)
+    engine = db.Column(db.Text, nullable=False)
     is_exclusive = db.Column(db.String(255), nullable=False)
     images = db.relationship('CarImages', backref='car', lazy=True)
 
@@ -55,7 +55,7 @@ class Testimonies(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True)
-    testimony = db.Column(db.String(255), nullable=False)
+    testimony = db.Column(db.Text, nullable=False)
     name = db.Column(db.String(255), nullable=False)
 
 

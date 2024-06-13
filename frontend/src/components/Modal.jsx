@@ -1,6 +1,6 @@
 import React from "react";
 
-function Modal({ modal_id, modal_title, children, onClose }) {
+function Modal({ modal_id, modal_title, children, onClose, button_name }) {
     return (
         <div className="modal fade" id={modal_id} tabIndex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
             <div className="modal-dialog modal-dialog-centered">
@@ -15,8 +15,7 @@ function Modal({ modal_id, modal_title, children, onClose }) {
                         {children}
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
-                        <button type="button" className="btn btn-primary">Save changes</button>
+                        <button type="button" className="btn btn-primary full-width">{button_name}</button>
                     </div>
                 </div>
             </div>

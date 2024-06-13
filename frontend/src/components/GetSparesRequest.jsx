@@ -88,7 +88,6 @@ function SpareRequests() {
                             <p>Year: {selectedSpare.year}</p>
                             <p>Chassis no: {selectedSpare.chassis_no}</p>
                             <p>Part no: {selectedSpare.part_no}</p>
-                           
                         </div>
                     )}
                 </Modal.Body>

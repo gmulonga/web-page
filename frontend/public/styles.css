@@ -750,46 +750,7 @@ color: #D4ECDD;
 
 
 
-/* ------------SELECTED CARS PAGE STYLES ------------ */
 
-/* Customize the modal styles */
-/* .custom-modal .modal-content {
-  border-radius: 10px;
-} */
-
-
-/* .custom-modal .modal-header {
-  background-color: #345B63;
-  border-bottom: none;
-}
-
-.custom-modal .modal-title {
-  color: #D4ECDD;
-}
-
-.modal-header .btn-close  {
-  color: white;
-}
-
-.custom-modal .modal-body {
-  padding: 20px;
-}
-
-.custom-modal .modal-footer {
-  border-top: none;
-  justify-content: flex-start;
-}
-
-.submit-modal {
-  margin-top: 20px;
-  transition: background-color 0.3s ease-in-out;
-  background-color: #345B63;
-}
-
-.submit-modal:hover {
-  background-color: #152D35;
-  transform: scale(1.1);
-} */
 
 .modal.fade {
   opacity: 9;

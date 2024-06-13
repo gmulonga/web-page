@@ -67,7 +67,7 @@ function SelectedCar() {
             car_id: car_id
         };
 
-        axios.post(`${URL}/add_request`, formData)
+        axios.post(`${URL}/request/new`, formData)
             .then((response) => {
                 console.log(response.data);
                 // handleClose();
@@ -184,7 +184,7 @@ function SelectedCar() {
                                         car.images.map((image, index) => (
                                             <SelectedCarImages
                                                 key={index}
-                                                image={image} // Use the image from the database
+                                                image={image}
                                                 onClick={(image, index) => handleImageClick(image, index)}
                                             />
                                         ))}
@@ -209,6 +209,7 @@ function SelectedCar() {
                                                     modal_id="exampleModal"
                                                     modal_title="Example Modal Title"
                                                     onClose={handleCloseModal}
+                                                    button_name="Request"
                                                 >
                                                     <p>This is the modal content.</p>
                                                 </Modal>
@@ -317,7 +318,6 @@ function SelectedCar() {
                 </div>
 
             </div>
-
 
 
             <div className="container similar-cars">
