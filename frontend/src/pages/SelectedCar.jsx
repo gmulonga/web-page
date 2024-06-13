@@ -18,6 +18,8 @@ import CarCard from "../components/CarCard";
 import CarsAPI from "../services/carsAPI";
 import { openModal, closeModal } from "../utilis/utilis";
 import Modal from "../components/Modal";
+import { isValidEmail } from "../utilis/utilis";
+import Message from "../components/Message";
 
 
 function SelectedCar() {
@@ -31,6 +33,9 @@ function SelectedCar() {
     const [showDimensions, setShowDimensions] = useState(false);
     const carsApi = new CarsAPI();
 
+    const [showMessage, setShowMessage] = useState(false);
+    const [message, setMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -43,11 +48,6 @@ function SelectedCar() {
         closeModal(setModalVisible);
     };
 
-    function isValidEmail(email) {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailPattern.test(email);
-    }
-
     const handleSubmit = (event) => {
         event.preventDefault();
         const name = event.target.name.value;
@@ -56,8 +56,8 @@ function SelectedCar() {
         const car_id = id;
 
         if (!isValidEmail(email)) {
-            alert('Invalid email format');
-            return;
+            setMessage('Invalid Email format');
+            setAlertType('alert-success');
         }
 
         const formData = {
@@ -165,7 +165,7 @@ function SelectedCar() {
             <section className="product-details spad">
                 <HeaderPage
                     label={car ? car.year + " " + car.name : "Loading..."}
-                // image={car ? car.images[0] : "../images/beemer.jpeg"}
+                image={car ? car.images[0] : "../images/beemer.jpeg"}
                 />
                 <div className="selected-car-page">
                     <div className="container">
@@ -179,7 +179,7 @@ function SelectedCar() {
                                     />
                                 </div>
 
-                                {/* <OwlCarousel className="car-carousel" autoplay={true}>
+                                <OwlCarousel className="car-carousel" autoplay={true}>
                                     {car &&
                                         car.images.map((image, index) => (
                                             <SelectedCarImages
@@ -188,7 +188,7 @@ function SelectedCar() {
                                                 onClick={(image, index) => handleImageClick(image, index)}
                                             />
                                         ))}
-                                </OwlCarousel> */}
+                                </OwlCarousel>
 
                             </div>
 
@@ -336,7 +336,7 @@ function SelectedCar() {
                             key={carEntry.id}
                             id={carEntry.id}
                             name={carEntry.name}
-                            image={carEntry.image} // Use the processed image from carsWithBase64Images
+                            image={carEntry.image}
                             price={carEntry.price}
                         />
                     ))}
