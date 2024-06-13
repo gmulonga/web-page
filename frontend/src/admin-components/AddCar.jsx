@@ -4,6 +4,7 @@ import Message from '../components/Message';
 import CarsAPI from '../services/carsAPI';
 import { generateYearOptions } from '../utilis/utilis';
 import CustomInput from '../Input-components/input';
+import CustomDropdown from '../Input-components/dropdown';
 
 
 function AddCar() {
@@ -127,6 +128,16 @@ function AddCar() {
         updateImages();
     };
 
+    const yearOptions = generateYearOptions().map(year => ({ value: year, label: year }));
+    const isExclusiveOptions = [
+        { value: 'True', label: 'True' },
+        { value: 'False', label: 'False' }
+    ];
+    const typeOptions = [
+        { value: 'EVs', label: 'EVs' },
+        { value: 'ICEs', label: 'ICEs' }
+    ];
+
     return <div>
         <CustomInput
             name="Name"
@@ -140,25 +151,32 @@ function AddCar() {
             value={carData.price}
             onChange={handleInputChange}
         />
+        <CustomDropdown
+            label="Year"
+            id="year"
+            name="year"
+            value={carData.year}
+            onChange={handleInputChange}
+            options={yearOptions}
+        />
 
-        <label htmlFor='year' className='car-name'>Year:</label><br />
-        <select id='year' name='year' className="selector-style" value={carData.year} onChange={handleInputChange}>
-            {generateYearOptions()}
-        </select><br />
+        <CustomDropdown
+            label="Is Exclusive"
+            id="is_exclusive"
+            name="is_exclusive"
+            value={carData.is_exclusive}
+            onChange={handleInputChange}
+            options={isExclusiveOptions}
+        />
 
-        {/* Is Exclusive */}
-        <label htmlFor='is_exclusive' className='car-name'>Is Exclusive:</label><br />
-        <select id='is_exclusive' name='is_exclusive' className="selector-style" value={carData.is_exclusive} onChange={handleInputChange}>
-            <option value='True' defaultValue>True</option>
-            <option value='False' >False</option>
-        </select><br />
-
-        {/* type */}
-        <label htmlFor='type' className='car-name'>Type</label><br />
-        <select id='type' name='type' className="selector-style" value={carData.type} onChange={handleInputChange}>
-            <option value='EVs' defaultValue>EVs</option>
-            <option value='ICEs'>ICEs</option>
-        </select><br />
+        <CustomDropdown
+            label="Type"
+            id="type"
+            name="type"
+            value={carData.type}
+            onChange={handleInputChange}
+            options={typeOptions}
+        />
 
 
         {/* handling multiple images */}
