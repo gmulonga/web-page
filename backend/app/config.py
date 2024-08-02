@@ -1,9 +1,24 @@
 import os
 import secrets
 
+class Config:
+    SECRET_KEY = secrets.token_bytes(24)
+    JWT_SECRET_KEY = secrets.token_bytes(24)
+    WTF_CSRF_SECRET_KEY = secrets.token_hex(16)
+    DB_USER = 'default_user'
+    DB_PASSWORD = 'default_password'
+    DB_HOST = 'localhost'
+    DB_PORT = '3306'
+    DB_NAME = 'default_db'
+    SQLALCHEMY_DATABASE_URI = f"mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-SECRET_KEY = secrets.token_bytes(24)
-JWT_SECRET_KEY = secrets.token_bytes(24)
-WTF_CSRF_SECRET_KEY = secrets.token_hex(16)
-SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+class ProductionConfig(Config):
+    DEBUG = False
+    TESTING = False
+
+class TestingConfig(Config):
+    TESTING = True
