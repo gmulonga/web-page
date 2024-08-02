@@ -1,24 +1,25 @@
-from flask import Flask, jsonify
+from flask import Flask, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_wtf.csrf import CSRFProtect, generate_csrf
-
+from app.config import DevelopmentConfig
+import mysql.connector
+import sqlalchemy
 
 db = SQLAlchemy()
 ma = Marshmallow()
 jwt = JWTManager()
-csrf = CSRFProtect()
 
-
-def create_app():
-    """creates a flask app"""
+def create_app(config_class=DevelopmentConfig):
+    """Creates a Flask app"""
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object('app.config')
+    app.config.from_object(config_class)
     app.config.from_pyfile('config.py')
 
-    csrf.init_app(app)
+    # Configure SQLAlchemy to use mysql-connector-python
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{app.config['DB_USER']}:{app.config['DB_PASSWORD']}@{app.config['DB_HOST']}:{app.config['DB_PORT']}/{app.config['DB_NAME']}"
+
     db.init_app(app)
     ma.init_app(app)
     jwt.init_app(app)
@@ -32,10 +33,26 @@ def create_app():
 
         db.create_all()
 
-    @app.route('/csrf-token', methods=['GET'])
-    def get_csrf_token():
-        """gets the csrf token"""
-        token = generate_csrf()
-        return jsonify({'csrf_token': token})
-
     return app
+
+def get_db():
+    if 'db' not in g:
+        try:
+            g.db = mysql.connector.connect(
+                host=app.config['DB_HOST'],
+                user=app.config['DB_USER'],
+                password=app.config['DB_PASSWORD'],
+                database=app.config['DB_NAME'],
+                port=app.config['DB_PORT']
+            )
+            if g.db.is_connected():
+                print("Connection to MySQL database was successful")
+        except mysql.connector.Error as err:
+            print(f"Error: '{err}'")
+            g.db = None
+    return g.db
+
+def close_db(e=None):
+    db = g.pop('db', None)
+    if db is not None and db.is_connected():
+        db.close()

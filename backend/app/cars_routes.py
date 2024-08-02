@@ -1,53 +1,14 @@
 from flask import jsonify, Blueprint, request
 from flask_jwt_extended import jwt_required
 from .models import (
-    Cars, Testimonies, CarImages, db
+    Cars, CarImages, db
 )
 
 
 cars_bp = Blueprint('cars', __name__)
 
 
-@cars_bp.route('/', methods=['GET'])
-def home():
-    """Gets all the cars and testimonials
-
-    Returns:
-        json: returns a json data for the cars and testimonies
-    """
-    cars = Cars.query.all()
-    testimonials = Testimonies.query.all()
-
-    car_list = []
-    for car in cars:
-        car_dict = {
-            'id': car.id,
-            'name': car.name,
-            'price': car.price,
-            'type': car.type,
-            'year': car.year,
-            'description': car.description,
-        }
-        car_list.append(car_dict)
-
-    testimony_list = []
-    for testimony in testimonials:
-        testimony_dict = {
-            'id': testimony.id,
-            'name': testimony.name,
-            'testimony': testimony.testimony,
-        }
-        testimony_list.append(testimony_dict)
-
-    data = {
-        'cars': car_list,
-        'testimonials': testimony_list,
-    }
-
-    return jsonify(data)
-
-
-@cars_bp.route('/cars', methods=['GET'])
+@cars_bp.route('/car', methods=['GET'])
 def get_cars():
     """Retrieve a list of all cars.
 
@@ -103,16 +64,22 @@ def add_car():
             db.session.add(new_car)
             db.session.commit()
 
+            images = data.get('images', [])
+            for image_base64 in images:
+                new_image = CarImages(image_base64=image_base64, car=new_car)
+                db.session.add(new_image)
+            db.session.commit()
+
             return jsonify(
                 {
                     "status": "success",
                     "message": "Car added successfully"
                 }
-            )
+            ), 200
 
         except Exception as e:
             db.session.rollback()
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': str(e)}), 400
     else:
         return jsonify({'error': 'Invalid request'}), 400
 
@@ -150,7 +117,7 @@ def get_car(id):
     return jsonify({"message": "Car not found"}), 404
 
 
-@cars_bp.route('/cars/<string:name>', methods=['GET'])
+@cars_bp.route('/car/<string:name>', methods=['GET'])
 def get_cars_by_name(name):
     """Returns a car by name
 
@@ -202,7 +169,7 @@ def get_car_images(car_id):
     return jsonify(image_data)
 
 
-@cars_bp.route('/cars/evs', methods=['GET'])
+@cars_bp.route('/car/evs', methods=['GET'])
 def get_evs():
     """returns all the evs
 
@@ -230,7 +197,7 @@ def get_evs():
     return jsonify(evs_list)
 
 
-@cars_bp.route('/cars/evs/<string:name>', methods=['GET'])
+@cars_bp.route('/car/evs/<string:name>', methods=['GET'])
 def get_evs_by_name(name):
     """Returns all the evs by name
 
@@ -270,7 +237,7 @@ def get_evs_by_name(name):
     return jsonify(evs_list)
 
 
-@cars_bp.route('/cars/exclusive', methods=['GET'])
+@cars_bp.route('/car/exclusive', methods=['GET'])
 def get_exclusive_cars():
     """Returns all the exclusive cars
 
